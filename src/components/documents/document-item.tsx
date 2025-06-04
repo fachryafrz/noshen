@@ -2,7 +2,7 @@
 
 import { DocumentsTree } from "@/lib/types";
 import { Button } from "../ui/button";
-import { ChevronRight, File, Plus, Trash2 } from "lucide-react";
+import { ChevronRight, Ellipsis, File, Plus, Trash2 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useClerk } from "@clerk/nextjs";
 import { useMutation } from "convex/react";
@@ -16,6 +16,12 @@ import {
   ContextMenuItem,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export default function DocumentItem({
   document,
@@ -43,6 +49,22 @@ export default function DocumentItem({
 
     router.push(`/${user?.username}/${documentId}`);
   };
+
+  const options: {
+    icon: React.ReactNode;
+    title: string;
+    onClick: () => Promise<void>;
+    variant?: "destructive" | "default";
+  }[] = [
+    {
+      icon: <Trash2 />,
+      title: "Move to trash",
+      onClick: async () => {
+        await deleteDocument({ documentId: document._id });
+      },
+      variant: "destructive",
+    },
+  ];
 
   return (
     <li>
@@ -86,26 +108,54 @@ export default function DocumentItem({
               ) : (
                 <div></div>
               )}
-              <Button
-                size={"icon"}
-                variant={"ghost"}
-                className="cursor-pointer size-6"
-                onClick={() => handleCreateDocument(document._id)}
-              >
-                <Plus />
-              </Button>
+              <div>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      size={"icon"}
+                      variant={"ghost"}
+                      className="cursor-pointer size-6"
+                    >
+                      <Ellipsis />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    {options.map((option) => (
+                      <DropdownMenuItem
+                        key={option.title}
+                        className="cursor-pointer"
+                        onClick={option.onClick}
+                        variant={option.variant}
+                      >
+                        {option.icon} {option.title}
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                <Button
+                  size={"icon"}
+                  variant={"ghost"}
+                  className="cursor-pointer size-6"
+                  onClick={() => handleCreateDocument(document._id)}
+                >
+                  <Plus />
+                </Button>
+              </div>
             </div>
           </div>
         </ContextMenuTrigger>
         <ContextMenuContent>
-          <ContextMenuItem
-            className="cursor-pointer"
-            onClick={async () => {
-              await deleteDocument({ documentId: document._id });
-            }}
-          >
-            <Trash2 /> Delete
-          </ContextMenuItem>
+          {options.map((option) => (
+            <ContextMenuItem
+              key={option.title}
+              className="cursor-pointer"
+              onClick={option.onClick}
+              variant={option.variant}
+            >
+              {option.icon} {option.title}
+            </ContextMenuItem>
+          ))}
         </ContextMenuContent>
       </ContextMenu>
 
