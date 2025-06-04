@@ -1,7 +1,7 @@
 export type SiteConfig = typeof siteConfig;
 
 export const siteConfig = {
-  name: "Notion Clone",
+  name: "Notion",
   description: "No description",
   url:
     process.env.NODE_ENV === "production"
