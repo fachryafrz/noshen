@@ -99,8 +99,15 @@ export default function DocumentItem({
             className="cursor-pointer"
             onClick={async () => {
               await deleteDocument({ documentId: document._id });
-              if (documentId === document._id)
-                router.push(`/${user?.username}`);
+              if (documentId === document._id) {
+                if (document.parentDocumentId) {
+                  router.push(
+                    `/${user?.username}/${document.parentDocumentId}`
+                  );
+                } else {
+                  router.push(`/${user?.username}`);
+                }
+              }
             }}
           >
             <Trash2 /> Delete
