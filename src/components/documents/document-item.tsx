@@ -50,7 +50,10 @@ export default function DocumentItem({
       <ContextMenu>
         <ContextMenuTrigger>
           <div
-            className="inline-flex items-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 h-9 px-4 py-2 has-[>svg]:px-3 cursor-pointer w-full justify-start relative group min-w-[125px]"
+            className={cn(
+              "inline-flex items-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 h-9 px-4 py-2 has-[>svg]:px-3 cursor-pointer w-full justify-start relative group min-w-[125px]",
+              documentId === document._id && "bg-muted dark:bg-muted/50"
+            )}
             role="button"
             onClick={() => {
               router.push(`/${user?.username}/${document._id}`);
@@ -99,15 +102,6 @@ export default function DocumentItem({
             className="cursor-pointer"
             onClick={async () => {
               await deleteDocument({ documentId: document._id });
-              if (documentId === document._id) {
-                if (document.parentDocumentId) {
-                  router.push(
-                    `/${user?.username}/${document.parentDocumentId}`
-                  );
-                } else {
-                  router.push(`/${user?.username}`);
-                }
-              }
             }}
           >
             <Trash2 /> Delete
@@ -117,7 +111,7 @@ export default function DocumentItem({
 
       {/* Render children jika ada */}
       {showChild && document.children && document.children.length > 0 && (
-        <ul className="ml-4 border-l border-muted-foreground/20 pl-2">
+        <ul className="ml-5 border-l border-muted-foreground/20 pl-1">
           {document.children.map((child) => (
             <DocumentItem key={child._id} document={child} />
           ))}

@@ -135,3 +135,43 @@ export const deleteDocument = mutation({
     await deleteRecursively(args.documentId);
   },
 });
+
+export const restoreDocument = mutation({
+  args: {
+    documentId: v.id("documents"),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) return;
+
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_token", (q) =>
+        q.eq("tokenIdentifier", identity.tokenIdentifier)
+      )
+      .unique();
+    if (!user) return;
+
+    await ctx.db.patch(args.documentId, { isDeleted: false });
+  },
+});
+
+export const deleteForever = mutation({
+  args: {
+    documentId: v.id("documents"),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) return;
+
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_token", (q) =>
+        q.eq("tokenIdentifier", identity.tokenIdentifier)
+      )
+      .unique();
+    if (!user) return;
+
+    await ctx.db.delete(args.documentId);
+  },
+});
