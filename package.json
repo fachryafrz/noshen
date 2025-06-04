@@ -9,6 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@blocknote/core": "0.32.0-hackdays.0",
+    "@blocknote/mantine": "0.32.0-hackdays.0",
+    "@blocknote/react": "0.32.0-hackdays.0",
     "@clerk/nextjs": "^6.20.2",
     "@clerk/themes": "^2.2.48",
     "@hookform/resolvers": "^5.0.1",
