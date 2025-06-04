@@ -1,17 +1,11 @@
 "use client";
 
-import { useQuery } from "convex/react";
-import { Id } from "../../../convex/_generated/dataModel";
-import { api } from "../../../convex/_generated/api";
+import { Doc } from "../../../convex/_generated/dataModel";
 
 export default function DocumentHeader({
-  documentId,
+  document,
 }: {
-  documentId: Id<"documents">;
+  document: Doc<"documents">;
 }) {
-  const document = useQuery(api.documents.getDocument, {
-    documentId,
-  });
-
   return <header className="p-4">{document?.title}</header>;
 }

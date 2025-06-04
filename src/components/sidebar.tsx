@@ -6,6 +6,7 @@ import {
   ChevronDown,
   ChevronsLeft,
   CirclePlus,
+  Home,
   Search,
   Settings,
   Trash2,
@@ -49,6 +50,13 @@ export default function Sidebar() {
       title: "Search",
       onClick: () => {
         toast.info("Not implemented yet");
+      },
+    },
+    {
+      icon: <Home className="size-5" />,
+      title: "Home",
+      onClick: () => {
+        router.push(`/${user?.username}`);
       },
     },
     {

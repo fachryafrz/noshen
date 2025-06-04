@@ -3,7 +3,7 @@
 import { DocumentsTree } from "@/lib/types";
 import { Button } from "../ui/button";
 import { ChevronRight, File, Plus, Trash2 } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useClerk } from "@clerk/nextjs";
 import { useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
@@ -24,6 +24,9 @@ export default function DocumentItem({
   onClick?: () => void;
 }) {
   const router = useRouter();
+  const pathname = usePathname();
+
+  const [, , documentId] = pathname.split("/");
 
   const { user } = useClerk();
 
@@ -94,7 +97,11 @@ export default function DocumentItem({
         <ContextMenuContent>
           <ContextMenuItem
             className="cursor-pointer"
-            onClick={() => deleteDocument({ documentId: document._id })}
+            onClick={async () => {
+              await deleteDocument({ documentId: document._id });
+              if (documentId === document._id)
+                router.push(`/${user?.username}`);
+            }}
           >
             <Trash2 /> Delete
           </ContextMenuItem>

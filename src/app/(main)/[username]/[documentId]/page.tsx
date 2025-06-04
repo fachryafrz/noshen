@@ -1,5 +1,5 @@
-import DocumentHeader from "@/components/documents/header";
 import { Id } from "../../../../../convex/_generated/dataModel";
+import DocumentPage from "@/components/documents";
 
 export default async function DocumentsPage({
   params,
@@ -8,13 +8,5 @@ export default async function DocumentsPage({
 }) {
   const { documentId } = await params;
 
-  return (
-    <div>
-      {/* Header */}
-      <DocumentHeader documentId={documentId} />
-
-      {/* Content */}
-      <div className="p-4">Content</div>
-    </div>
-  );
+  return <DocumentPage documentId={documentId} />;
 }
