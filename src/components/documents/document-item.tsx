@@ -27,7 +27,6 @@ export default function DocumentItem({
   document,
 }: {
   document: DocumentsTree;
-  onClick?: () => void;
 }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -61,6 +60,8 @@ export default function DocumentItem({
       title: "Move to trash",
       onClick: async () => {
         await deleteDocument({ documentId: document._id });
+
+        router.push(`/${user?.username}`);
       },
       variant: "destructive",
     },
@@ -73,8 +74,8 @@ export default function DocumentItem({
         <ContextMenuTrigger>
           <div
             className={cn(
-              "inline-flex items-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 h-9 px-4 py-2 has-[>svg]:px-3 cursor-pointer w-full justify-start relative group min-w-[125px]",
-              documentId === document._id && "bg-muted dark:bg-muted/50"
+              "focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/30 group relative inline-flex h-9 w-full min-w-[125px] shrink-0 cursor-pointer items-center justify-start gap-2 rounded-md px-4 py-2 text-sm font-medium whitespace-nowrap transition-all outline-none focus-visible:ring-[3px] disabled:pointer-events-none disabled:opacity-50 has-[>svg]:px-3 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+              documentId === document._id && "bg-muted dark:bg-muted/50",
             )}
             role="button"
             onClick={() => {
@@ -84,24 +85,24 @@ export default function DocumentItem({
             <File
               className={cn(
                 document.children.length > 0 &&
-                  "group-hover:opacity-0 transition-all"
+                  "transition-all group-hover:opacity-0",
               )}
             />
             <span>{document.title}</span>
 
             {/* Actions */}
-            <div className="absolute flex items-center justify-between p-2 z-10 inset-0 group-hover:opacity-100 opacity-0 transition-all pointer-events-none [&_*]:pointer-events-auto">
+            <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-between p-2 opacity-0 transition-all group-hover:opacity-100 [&_*]:pointer-events-auto">
               {document.children.length > 0 ? (
                 <Button
                   size={"icon"}
                   variant={"ghost"}
-                  className="cursor-pointer size-6"
+                  className="hover:!bg-accent/100 size-6 cursor-pointer"
                   onClick={() => setShowChild(!showChild)}
                 >
                   <ChevronRight
                     className={cn(
                       showChild ? "rotate-90" : "",
-                      "transition-all"
+                      "transition-all",
                     )}
                   />
                 </Button>
@@ -114,7 +115,7 @@ export default function DocumentItem({
                     <Button
                       size={"icon"}
                       variant={"ghost"}
-                      className="cursor-pointer size-6"
+                      className="hover:!bg-accent/100 size-6 cursor-pointer"
                     >
                       <Ellipsis />
                     </Button>
@@ -136,7 +137,7 @@ export default function DocumentItem({
                 <Button
                   size={"icon"}
                   variant={"ghost"}
-                  className="cursor-pointer size-6"
+                  className="hover:!bg-accent/100 size-6 cursor-pointer"
                   onClick={() => handleCreateDocument(document._id)}
                 >
                   <Plus />
@@ -161,7 +162,7 @@ export default function DocumentItem({
 
       {/* Render children jika ada */}
       {showChild && document.children && document.children.length > 0 && (
-        <ul className="ml-5 border-l border-muted-foreground/20 pl-1">
+        <ul className="border-muted-foreground/20 ml-5 border-l pl-1">
           {document.children.map((child) => (
             <DocumentItem key={child._id} document={child} />
           ))}

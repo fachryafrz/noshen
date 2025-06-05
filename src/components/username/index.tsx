@@ -7,11 +7,15 @@ import { siteConfig } from "@/config/site";
 import { useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { Id } from "../../../convex/_generated/dataModel";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function UsernameHome() {
   const router = useRouter();
+  const pathname = usePathname();
   const { user } = useClerk();
+
+  const [, username] = pathname.split("/");
 
   const createDocument = useMutation(api.documents.createDocument);
 
@@ -24,8 +28,16 @@ export default function UsernameHome() {
     router.push(`/${user?.username}/${documentId}`);
   };
 
+  useEffect(() => {
+    if (!user) return;
+
+    if (user.username !== username) {
+      router.push(`/${user.username}`);
+    }
+  }, [user, username, router]);
+
   return (
-    <div className="w-full h-full flex flex-col items-center justify-center gap-4">
+    <div className="flex h-full w-full flex-col items-center justify-center gap-4">
       <h1 className="text-3xl font-bold">{`Welcome to ${user?.firstName}'s ${siteConfig.name}`}</h1>
 
       <Button className="cursor-pointer" onClick={() => handleCreateDocument()}>

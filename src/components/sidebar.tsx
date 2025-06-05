@@ -6,10 +6,12 @@ import {
   ChevronDown,
   ChevronsLeft,
   CirclePlus,
+  File,
   Home,
   Search,
   Settings,
   Trash2,
+  Undo,
 } from "lucide-react";
 import { Button } from "./ui/button";
 import {
@@ -22,18 +24,34 @@ import { toast } from "sonner";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { Id } from "../../convex/_generated/dataModel";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { DocumentsTree } from "@/lib/types";
 import DocumentItem from "./documents/document-item";
 import { useEffect, useRef, useState } from "react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Input } from "./ui/input";
 
 export default function Sidebar() {
   const router = useRouter();
+  const pathname = usePathname();
+
+  const [, , documentId] = pathname.split("/");
 
   const { user } = useClerk();
 
+  const [searchTrashQuery, setSearchTrashQuery] = useState("");
+
   const createDocument = useMutation(api.documents.createDocument);
   const documents = useQuery(api.documents.getDocuments);
+  const deletedDocuments = useQuery(api.documents.getDeleted, {
+    query: searchTrashQuery,
+  });
+  const restoreDocument = useMutation(api.documents.restoreDocument);
+  const deleteForever = useMutation(api.documents.deleteForever);
 
   const handleCreateDocument = async (parentDocumentId?: Id<"documents">) => {
     const documentId = await createDocument({
@@ -66,16 +84,11 @@ export default function Sidebar() {
         toast.info("Not implemented yet");
       },
     },
-    {
-      icon: <CirclePlus className="size-5" />,
-      title: "New page",
-      onClick: handleCreateDocument,
-    },
   ];
 
   function buildTree(
     docs: DocumentsTree[],
-    parentId: string | null = null
+    parentId: string | null = null,
   ): DocumentsTree[] {
     return docs
       .filter((doc) => (doc.parentDocumentId ?? null) === parentId)
@@ -113,7 +126,7 @@ export default function Sidebar() {
   return (
     <aside
       ref={sidebarRef}
-      className="bg-secondary/50 p-2 pb-0 h-dvh group/sidebar overflow-y-auto relative flex flex-col z-50"
+      className="bg-secondary/50 group/sidebar relative z-50 flex h-dvh flex-col overflow-y-auto p-2 pb-0"
       style={{
         width: width,
       }}
@@ -125,9 +138,9 @@ export default function Sidebar() {
           <DropdownMenuTrigger asChild>
             <Button
               variant="ghost"
-              className="cursor-pointer grow justify-start"
+              className="grow cursor-pointer justify-start"
             >
-              <img src={user?.imageUrl} alt="" className="w-5 h-5 rounded" />
+              <img src={user?.imageUrl} alt="" className="h-5 w-5 rounded" />
               {user?.username}
               <ChevronDown className="text-primary/50" />
             </Button>
@@ -152,18 +165,18 @@ export default function Sidebar() {
             toast.info("Not implemented yet");
           }}
         >
-          <ChevronsLeft className="size-6 text-primary/50" />
+          <ChevronsLeft className="text-primary/50 size-6" />
         </Button>
       </div>
 
-      <div className="space-y-2 grow overflow-x-auto -mx-2 px-2">
+      <div className="-mx-2 grow space-y-2 overflow-x-auto px-2">
         {/* Menu */}
         <ul>
           {menu.map((item) => (
             <li key={item.title}>
               <Button
                 variant={`ghost`}
-                className="cursor-pointer w-full justify-start"
+                className="w-full cursor-pointer justify-start"
                 onClick={() => item.onClick()}
               >
                 {item.icon}
@@ -179,28 +192,111 @@ export default function Sidebar() {
             <DocumentItem
               key={document._id}
               document={document as DocumentsTree}
-              onClick={handleCreateDocument}
             />
           ))}
+          <li>
+            <Button
+              variant={`ghost`}
+              className="w-full cursor-pointer justify-start"
+              onClick={() => handleCreateDocument()}
+            >
+              <CirclePlus />
+              New page
+            </Button>
+          </li>
         </ul>
 
         {/* Trash */}
-        <Button
-          variant={`ghost`}
-          className="cursor-pointer w-full justify-start"
-          onClick={() => {
-            toast.info("Not implemented yet");
-          }}
-        >
-          <Trash2 />
-          Trash
-        </Button>
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant={`ghost`}
+              className="w-full cursor-pointer justify-start"
+            >
+              <Trash2 />
+              Trash
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent side="right" className="z-[99999]">
+            <div className="space-y-4">
+              <div className="flex items-center gap-1">
+                {/* Icon */}
+                <div className="grid w-9 place-content-center">
+                  <Search className="size-5" />
+                </div>
+
+                {/* Input */}
+                <Input
+                  type="text"
+                  placeholder="Search..."
+                  className="w-full"
+                  onChange={(e) => {
+                    setSearchTrashQuery(e.target.value);
+                  }}
+                  value={searchTrashQuery}
+                />
+              </div>
+
+              {deletedDocuments?.length === 0 && (
+                <span className="text-primary/50 block w-full text-center text-sm font-medium">
+                  {searchTrashQuery ? "No results found" : "No page in trash"}
+                </span>
+              )}
+
+              <ul>
+                {(deletedDocuments || []).map((document) => (
+                  <li key={document._id}>
+                    <Button
+                      variant={`ghost`}
+                      className="hover:!bg-accent/30 relative w-full cursor-pointer justify-start"
+                      onClick={() => {
+                        router.push(`/${user?.username}/${document._id}`);
+                      }}
+                    >
+                      <File />
+                      {document.title}
+
+                      <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-end p-2 transition-all [&_*]:pointer-events-auto">
+                        <Button
+                          size={"icon"}
+                          variant={"ghost"}
+                          className="hover:!bg-accent/100 size-6 cursor-pointer"
+                          onClick={async () => {
+                            await restoreDocument({
+                              documentId: document._id,
+                            });
+                          }}
+                        >
+                          <Undo />
+                        </Button>
+                        <Button
+                          size={"icon"}
+                          variant={"ghost"}
+                          className="hover:!bg-accent/100 size-6 cursor-pointer"
+                          onClick={async () => {
+                            await deleteForever({ documentId: document._id });
+
+                            if (documentId === document._id) {
+                              router.push(`/${user?.username}`);
+                            }
+                          }}
+                        >
+                          <Trash2 />
+                        </Button>
+                      </div>
+                    </Button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </PopoverContent>
+        </Popover>
       </div>
 
       {/* Resizable Handle */}
       <div
         onMouseDown={() => (isResizingRef.current = true)}
-        className="opacity-50 hover:opacity-100 transition-all cursor-col-resize absolute h-full w-0.5 bg-primary/10 right-0 top-0 hover:w-1"
+        className="bg-primary/10 absolute top-0 right-0 h-full w-0.5 cursor-col-resize opacity-50 transition-all hover:w-1 hover:opacity-100"
       ></div>
     </aside>
   );

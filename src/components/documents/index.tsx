@@ -6,7 +6,7 @@ import { Id } from "../../../convex/_generated/dataModel";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { Button } from "../ui/button";
-import { redirect, usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useClerk } from "@clerk/nextjs";
 
 export default function DocumentPage({
@@ -14,6 +14,7 @@ export default function DocumentPage({
 }: {
   documentId: Id<"documents">;
 }) {
+  const router = useRouter();
   const pathname = usePathname();
 
   const [, , documentIdPathname] = pathname.split("/");
@@ -32,11 +33,11 @@ export default function DocumentPage({
         <div>
           {/* Deleted Banner */}
           {document.isDeleted && (
-            <div className="bg-red-600 p-2 px-4 flex items-center justify-center gap-1">
+            <div className="flex items-center justify-center gap-1 bg-red-600 p-2 px-4">
               This page is in the trash.
               <Button
                 variant={"ghost"}
-                className="border border-white cursor-pointer"
+                className="cursor-pointer border border-white"
                 onClick={async () => {
                   await restoreDocument({ documentId });
                 }}
@@ -45,17 +46,11 @@ export default function DocumentPage({
               </Button>
               <Button
                 variant={"ghost"}
-                className="border border-white cursor-pointer"
+                className="cursor-pointer border border-white"
                 onClick={async () => {
                   await deleteForever({ documentId });
                   if (documentIdPathname === documentId) {
-                    if (document.parentDocumentId) {
-                      redirect(
-                        `/${user?.username}/${document.parentDocumentId}`
-                      );
-                    } else {
-                      redirect(`/${user?.username}`);
-                    }
+                    router.push(`/${user?.username}`);
                   }
                 }}
               >

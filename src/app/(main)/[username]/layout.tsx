@@ -13,7 +13,7 @@ export default function UsernameLayout({
 
   if (isLoading) {
     return (
-      <div className="h-screen flex items-center justify-center">
+      <div className="flex h-screen items-center justify-center">
         <LoadingSpinner />
       </div>
     );
@@ -25,7 +25,9 @@ export default function UsernameLayout({
       <Sidebar />
 
       {/* Content */}
-      <main className="bg-secondary/20 grow">{children}</main>
+      <main className="bg-secondary/20 max-h-dvh grow overflow-y-auto">
+        {children}
+      </main>
     </div>
   );
 }

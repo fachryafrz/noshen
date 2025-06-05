@@ -11,7 +11,7 @@ export const getDocuments = query({
     const user = await ctx.db
       .query("users")
       .withIndex("by_token", (q) =>
-        q.eq("tokenIdentifier", identity.tokenIdentifier)
+        q.eq("tokenIdentifier", identity.tokenIdentifier),
       )
       .unique();
     if (!user) return;
@@ -36,7 +36,7 @@ export const getDocument = query({
     const user = await ctx.db
       .query("users")
       .withIndex("by_token", (q) =>
-        q.eq("tokenIdentifier", identity.tokenIdentifier)
+        q.eq("tokenIdentifier", identity.tokenIdentifier),
       )
       .unique();
     if (!user) return;
@@ -57,7 +57,7 @@ export const createDocument = mutation({
     const user = await ctx.db
       .query("users")
       .withIndex("by_token", (q) =>
-        q.eq("tokenIdentifier", identity.tokenIdentifier)
+        q.eq("tokenIdentifier", identity.tokenIdentifier),
       )
       .unique();
     if (!user) return;
@@ -69,6 +69,41 @@ export const createDocument = mutation({
       isPublished: false,
       isDeleted: false,
     });
+  },
+});
+
+export const getDeleted = query({
+  args: {
+    query: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) return;
+
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_token", (q) =>
+        q.eq("tokenIdentifier", identity.tokenIdentifier),
+      )
+      .unique();
+    if (!user) return;
+
+    if (args.query) {
+      return await ctx.db
+        .query("documents")
+        .withSearchIndex("by_title", (q) =>
+          q.search("title", args.query ?? "").eq("isDeleted", true),
+        )
+        .collect();
+    } else {
+      return await ctx.db
+        .query("documents")
+        .withIndex("by_user_deleted", (q) =>
+          q.eq("userId", user._id).eq("isDeleted", true),
+        )
+        .order("desc")
+        .collect();
+    }
   },
 });
 
@@ -85,7 +120,7 @@ export const updateDocument = mutation({
     const user = await ctx.db
       .query("users")
       .withIndex("by_token", (q) =>
-        q.eq("tokenIdentifier", identity.tokenIdentifier)
+        q.eq("tokenIdentifier", identity.tokenIdentifier),
       )
       .unique();
     if (!user) return;
@@ -108,7 +143,7 @@ export const deleteDocument = mutation({
     const user = await ctx.db
       .query("users")
       .withIndex("by_token", (q) =>
-        q.eq("tokenIdentifier", identity.tokenIdentifier)
+        q.eq("tokenIdentifier", identity.tokenIdentifier),
       )
       .unique();
     if (!user) return;
@@ -121,7 +156,7 @@ export const deleteDocument = mutation({
       const children = await ctx.db
         .query("documents")
         .withIndex("by_user_parent", (q) =>
-          q.eq("userId", user._id).eq("parentDocumentId", documentId)
+          q.eq("userId", user._id).eq("parentDocumentId", documentId),
         )
         .collect();
 
@@ -147,12 +182,32 @@ export const restoreDocument = mutation({
     const user = await ctx.db
       .query("users")
       .withIndex("by_token", (q) =>
-        q.eq("tokenIdentifier", identity.tokenIdentifier)
+        q.eq("tokenIdentifier", identity.tokenIdentifier),
       )
       .unique();
     if (!user) return;
 
-    await ctx.db.patch(args.documentId, { isDeleted: false });
+    const document = await ctx.db.get(args.documentId);
+    if (document?.parentDocumentId) {
+      await ctx.db.patch(args.documentId, { parentDocumentId: undefined });
+    }
+
+    const restoreRecursively = async (documentId: Id<"documents">) => {
+      const children = await ctx.db
+        .query("documents")
+        .withIndex("by_user_parent", (q) =>
+          q.eq("userId", user._id).eq("parentDocumentId", documentId),
+        )
+        .collect();
+
+      for (const child of children) {
+        await restoreRecursively(child._id);
+      }
+
+      await ctx.db.patch(documentId, { isDeleted: false });
+    };
+
+    await restoreRecursively(args.documentId);
   },
 });
 
@@ -167,7 +222,7 @@ export const deleteForever = mutation({
     const user = await ctx.db
       .query("users")
       .withIndex("by_token", (q) =>
-        q.eq("tokenIdentifier", identity.tokenIdentifier)
+        q.eq("tokenIdentifier", identity.tokenIdentifier),
       )
       .unique();
     if (!user) return;

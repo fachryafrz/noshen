@@ -21,5 +21,10 @@ export default defineSchema({
     parentDocumentId: v.optional(v.id("documents")),
   })
     .index("by_user", ["userId"])
-    .index("by_user_parent", ["userId", "parentDocumentId"]),
+    .index("by_user_parent", ["userId", "parentDocumentId"])
+    .index("by_user_deleted", ["userId", "isDeleted"])
+    .searchIndex("by_title", {
+      searchField: "title",
+      filterFields: ["isDeleted"],
+    }),
 });
