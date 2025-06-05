@@ -11,6 +11,14 @@ import "@blocknote/mantine/style.css";
 import { useCreateBlockNote } from "@blocknote/react";
 import { useTheme } from "next-themes";
 import { toast } from "sonner";
+import EmojiPicker, { Theme } from "emoji-picker-react";
+import { Button } from "../ui/button";
+import { ImageIcon, Smile } from "lucide-react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 export default function DocumentContent({
   document,
@@ -25,7 +33,8 @@ export default function DocumentContent({
   const deleteStorage = useMutation(api.storage.deleteStorage);
 
   const [isEditing, setIsEditing] = useState(false);
-  const [value, setValue] = useState(document?.title || "");
+  const [value, setValue] = useState(document.title || "");
+  const [emoji, setEmoji] = useState(document.icon || "");
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const prevStorageIdsRef = useRef<Set<string>>(new Set());
@@ -66,6 +75,16 @@ export default function DocumentContent({
     updateDocument({
       documentId: document._id,
       title: value,
+    });
+  };
+
+  const handleIconChange = async (emoji: string) => {
+    setEmoji(emoji);
+
+    await updateDocument({
+      documentId: document._id,
+      title: document?.title || "",
+      icon: emoji,
     });
   };
 
@@ -125,28 +144,74 @@ export default function DocumentContent({
 
   return (
     <div className="mx-auto max-w-4xl space-y-2 p-4">
-      {/* Title */}
-      {isEditing ? (
-        <TextareaAutosize
-          ref={inputRef}
-          className="resize-none px-[54px] text-5xl font-bold outline-none"
-          value={value}
-          onBlur={() => setIsEditing(false)}
-          autoFocus
-          placeholder="Untitled"
-          onChange={(e) => {
-            setValue(e.target.value);
-            handleTitleChange(e);
-          }}
-        />
-      ) : (
-        <h1
-          className="h-[62px] px-[54px] text-5xl font-bold"
-          onClick={() => setIsEditing(true)}
-        >
-          {document?.title}
-        </h1>
+      {/* Icon & Title */}
+
+      {emoji && (
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant={"ghost"}
+              size={"icon"}
+              className="mb-0 ml-[44px] !size-20 cursor-pointer !p-0 text-5xl"
+            >
+              {emoji}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="!w-auto !border-0 !p-0">
+            <EmojiPicker
+              theme={resolvedTheme === "dark" ? Theme.DARK : Theme.LIGHT}
+              onEmojiClick={(e) => handleIconChange(e.emoji)}
+            />
+          </PopoverContent>
+        </Popover>
       )}
+
+      <div className="group">
+        {/* Icon */}
+        <div className="px-[44px] opacity-0 transition-all group-hover:opacity-100">
+          {!emoji && (
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant={"ghost"} className="cursor-pointer">
+                  <Smile /> Add icon
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="!w-auto !border-0 !p-0">
+                <EmojiPicker
+                  theme={resolvedTheme === "dark" ? Theme.DARK : Theme.LIGHT}
+                  onEmojiClick={(e) => handleIconChange(e.emoji)}
+                />
+              </PopoverContent>
+            </Popover>
+          )}
+          <Button variant={"ghost"} className="cursor-pointer">
+            <ImageIcon /> Add cover
+          </Button>
+        </div>
+
+        {/* Title */}
+        {isEditing ? (
+          <TextareaAutosize
+            ref={inputRef}
+            className="resize-none px-[54px] text-5xl font-bold outline-none"
+            value={value}
+            onBlur={() => setIsEditing(false)}
+            autoFocus
+            placeholder="Untitled"
+            onChange={(e) => {
+              setValue(e.target.value);
+              handleTitleChange(e);
+            }}
+          />
+        ) : (
+          <h1
+            className="h-[62px] px-[54px] text-5xl font-bold"
+            onClick={() => setIsEditing(true)}
+          >
+            {document?.title}
+          </h1>
+        )}
+      </div>
 
       {/* Editor */}
       <BlockNoteView

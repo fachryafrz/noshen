@@ -200,7 +200,7 @@ export default function Sidebar() {
               className="w-full cursor-pointer justify-start"
               onClick={() => handleCreateDocument()}
             >
-              <CirclePlus />
+              <CirclePlus className="size-5" />
               New page
             </Button>
           </li>
@@ -213,11 +213,11 @@ export default function Sidebar() {
               variant={`ghost`}
               className="w-full cursor-pointer justify-start"
             >
-              <Trash2 />
+              <Trash2 className="size-5" />
               Trash
             </Button>
           </PopoverTrigger>
-          <PopoverContent side="right" className="z-[99999]">
+          <PopoverContent side="right">
             <div className="space-y-4">
               <div className="flex items-center gap-1">
                 {/* Icon */}
@@ -253,7 +253,11 @@ export default function Sidebar() {
                         router.push(`/${user?.username}/${document._id}`);
                       }}
                     >
-                      <File />
+                      {document.icon ? (
+                        <span className="-ml-1 block">{document.icon}</span>
+                      ) : (
+                        <File className="size-5" />
+                      )}
                       {document.title}
                     </Button>
 

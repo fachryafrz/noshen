@@ -81,12 +81,27 @@ export default function DocumentItem({
               router.push(`/${user?.username}/${document._id}`);
             }}
           >
-            <File
-              className={cn(
-                document.children.length > 0 &&
-                  "transition-all group-hover:opacity-0",
-              )}
-            />
+            {document.icon ? (
+              <span
+                className={cn(
+                  "-ml-1 block",
+                  cn(
+                    document.children.length > 0 &&
+                      "transition-all group-hover:opacity-0",
+                  ),
+                )}
+              >
+                {document.icon}
+              </span>
+            ) : (
+              <File
+                className={cn(
+                  "size-5",
+                  document.children.length > 0 &&
+                    "transition-all group-hover:opacity-0",
+                )}
+              />
+            )}
             <span>{document.title}</span>
           </Button>
 

@@ -112,6 +112,7 @@ export const updateDocument = mutation({
     documentId: v.id("documents"),
     title: v.string(),
     content: v.optional(v.string()),
+    icon: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -128,6 +129,7 @@ export const updateDocument = mutation({
     return await ctx.db.patch(args.documentId, {
       title: args.title,
       content: args.content,
+      icon: args.icon,
     });
   },
 });
