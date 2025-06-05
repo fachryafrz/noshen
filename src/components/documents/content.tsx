@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { useMutation } from "convex/react";
@@ -13,12 +14,14 @@ import { useTheme } from "next-themes";
 import { toast } from "sonner";
 import EmojiPicker, { Theme } from "emoji-picker-react";
 import { Button } from "../ui/button";
-import { ImageIcon, Smile } from "lucide-react";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+import ToolbarCover from "./toolbar-cover";
+import ToolbarIcon from "./toolbar-icon";
 
 export default function DocumentContent({
   document,
@@ -41,6 +44,8 @@ export default function DocumentContent({
   const editor = useCreateBlockNote({
     initialContent: document.content && JSON.parse(document.content),
     uploadFile: async (file) => {
+      if (!file) return "";
+
       if (file.size > 1 * 1024 * 1024) {
         toast.error("File size must be less than 1MB");
         return "";
@@ -52,7 +57,7 @@ export default function DocumentContent({
       // Step 2: POST the file to the URL
       const result = await fetch(postUrl, {
         method: "POST",
-        headers: { "Content-Type": file!.type },
+        headers: { "Content-Type": file.type },
         body: file,
       });
 
@@ -72,14 +77,12 @@ export default function DocumentContent({
     await updateDocument({
       documentId: document._id,
       title: value,
-      icon: document.icon,
     });
   };
 
   const handleIconChange = async (emoji: string) => {
     await updateDocument({
       documentId: document._id,
-      title: document?.title || "",
       icon: emoji,
     });
   };
@@ -117,7 +120,6 @@ export default function DocumentContent({
 
     await updateDocument({
       documentId: document._id,
-      title: document?.title || "",
       content: JSON.stringify(blocks, null, 2),
     });
   };
@@ -145,82 +147,101 @@ export default function DocumentContent({
   }, [document.content]);
 
   return (
-    <div className="mx-auto max-w-4xl space-y-2 p-4">
-      {/* Icon & Title */}
+    <div>
+      {/* Cover */}
+      {document.coverImage && (
+        <div className="group relative h-[30dvh]">
+          <img
+            src={document.coverImage}
+            alt=""
+            className="h-full w-full object-cover"
+            draggable={false}
+          />
 
-      {document.icon && (
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button
-              variant={"ghost"}
-              size={"icon"}
-              className="mb-0 ml-[44px] !size-20 cursor-pointer !p-0 text-5xl"
-            >
-              {document.icon}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="!w-auto !border-0 !p-0">
-            <EmojiPicker
-              theme={resolvedTheme === "dark" ? Theme.DARK : Theme.LIGHT}
-              onEmojiClick={(e) => handleIconChange(e.emoji)}
+          <div className="absolute right-2 bottom-2 opacity-0 transition-all group-hover:opacity-100">
+            <ToolbarCover
+              document={document}
+              title="Change Cover"
+              variant={"secondary"}
             />
-          </PopoverContent>
-        </Popover>
+          </div>
+        </div>
       )}
 
-      <div className="group">
-        {/* Icon */}
-        <div className="px-[44px] opacity-0 transition-all group-hover:opacity-100">
-          {!document.icon && (
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button variant={"ghost"} className="cursor-pointer">
-                  <Smile /> Add icon
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="!w-auto !border-0 !p-0">
-                <EmojiPicker
-                  theme={resolvedTheme === "dark" ? Theme.DARK : Theme.LIGHT}
-                  onEmojiClick={(e) => handleIconChange(e.emoji)}
-                />
-              </PopoverContent>
-            </Popover>
+      <div
+        className={cn(
+          "pointer-events-none mx-auto max-w-4xl space-y-2 p-4 [&_*]:pointer-events-auto",
+          document.coverImage && document.icon && "-translate-y-14",
+        )}
+      >
+        {document.icon && (
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant={"ghost"}
+                size={"icon"}
+                className="mb-0 ml-[44px] !size-20 cursor-pointer !p-0 text-5xl"
+              >
+                {document.icon}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="!w-auto !border-0 !p-0">
+              <EmojiPicker
+                theme={resolvedTheme === "dark" ? Theme.DARK : Theme.LIGHT}
+                onEmojiClick={(e) => handleIconChange(e.emoji)}
+              />
+            </PopoverContent>
+          </Popover>
+        )}
+
+        {/* Icon & Title */}
+        <div className="group">
+          {/* Icon */}
+          <div className="px-[44px] opacity-0 transition-all group-hover:opacity-100">
+            {!document.icon && (
+              <ToolbarIcon onEmojiClick={(e) => handleIconChange(e.emoji)} />
+            )}
+
+            {!document.coverImage && (
+              <ToolbarCover
+                document={document}
+                title="Add cover"
+                variant={"ghost"}
+              />
+            )}
+          </div>
+
+          {/* Title */}
+          {isEditing ? (
+            <TextareaAutosize
+              ref={inputRef}
+              className="resize-none px-[54px] text-5xl font-bold outline-none"
+              value={title}
+              onBlur={() => setIsEditing(false)}
+              autoFocus
+              placeholder="Untitled"
+              onChange={(e) => {
+                setTitle(e.target.value);
+                handleTitleChange(e.target.value);
+              }}
+            />
+          ) : (
+            <h1
+              className="h-[62px] px-[54px] text-5xl font-bold"
+              onClick={() => setIsEditing(true)}
+            >
+              {document?.title}
+            </h1>
           )}
-          <Button variant={"ghost"} className="cursor-pointer">
-            <ImageIcon /> Add cover
-          </Button>
         </div>
 
-        {/* Title */}
-        {isEditing ? (
-          <TextareaAutosize
-            ref={inputRef}
-            className="resize-none px-[54px] text-5xl font-bold outline-none"
-            value={title}
-            onBlur={() => setIsEditing(false)}
-            autoFocus
-            placeholder="Untitled"
-            onChange={(e) => {
-              setTitle(e.target.value);
-              handleTitleChange(e.target.value);
-            }}
-          />
-        ) : (
-          <h1
-            className="h-[62px] px-[54px] text-5xl font-bold"
-            onClick={() => setIsEditing(true)}
-          >
-            {document?.title}
-          </h1>
-        )}
+        {/* Editor */}
+        <BlockNoteView
+          editor={editor}
+          theme={resolvedTheme === "dark" ? "dark" : "light"}
+          onChange={handleEditorChange}
+        />
       </div>
-
-      {/* Editor */}
-      <BlockNoteView
-        editor={editor}
-        theme={resolvedTheme === "dark" ? "dark" : "light"}
-        onChange={handleEditorChange}
-      />
     </div>
   );
 }

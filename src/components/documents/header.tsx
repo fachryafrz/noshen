@@ -52,7 +52,7 @@ export default function DocumentHeader({
   }, [document.title, isEditing]);
 
   return (
-    <header className="p-4">
+    <header className="p-2">
       <Popover onOpenChange={setIsEditing}>
         <PopoverTrigger asChild>
           <Button variant={"ghost"} className="cursor-pointer p-2">

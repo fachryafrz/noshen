@@ -14,7 +14,7 @@ export default defineSchema({
     title: v.string(),
     userId: v.id("users"),
     content: v.optional(v.string()),
-    converImage: v.optional(v.string()),
+    coverImage: v.optional(v.string()),
     icon: v.optional(v.string()),
     isDeleted: v.boolean(),
     isPublished: v.boolean(),

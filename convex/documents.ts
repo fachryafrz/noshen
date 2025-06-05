@@ -41,7 +41,19 @@ export const getDocument = query({
       .unique();
     if (!user) return;
 
-    return await ctx.db.get(args.documentId);
+    const document = await ctx.db.get(args.documentId);
+
+    if (!document) return null;
+
+    return {
+      ...document,
+      coverImage:
+        (document.coverImage
+          ? document.coverImage.startsWith("http")
+            ? document.coverImage
+            : await ctx.storage.getUrl(document.coverImage as Id<"_storage">)
+          : undefined) ?? undefined,
+    };
   },
 });
 
@@ -110,9 +122,11 @@ export const getDeleted = query({
 export const updateDocument = mutation({
   args: {
     documentId: v.id("documents"),
-    title: v.string(),
+    title: v.optional(v.string()),
     content: v.optional(v.string()),
     icon: v.optional(v.string()),
+    coverImageUpload: v.optional(v.string()),
+    coverImageEmbed: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -128,10 +142,28 @@ export const updateDocument = mutation({
 
     const document = await ctx.db.get(args.documentId);
 
+    if (
+      args.coverImageUpload &&
+      document?.coverImage &&
+      !document.coverImage.startsWith("http")
+    ) {
+      await ctx.storage.delete(document.coverImage as Id<"_storage">);
+    }
+
+    if (
+      args.coverImageEmbed &&
+      document?.coverImage &&
+      !document.coverImage.startsWith("http")
+    ) {
+      await ctx.storage.delete(document.coverImage as Id<"_storage">);
+    }
+
     return await ctx.db.patch(args.documentId, {
-      title: args.title,
+      title: args.title || document?.title,
       content: args.content,
       icon: args.icon || document?.icon,
+      coverImage:
+        args.coverImageUpload || args.coverImageEmbed || document?.coverImage,
     });
   },
 });
@@ -172,6 +204,33 @@ export const deleteDocument = mutation({
     };
 
     await deleteRecursively(args.documentId);
+  },
+});
+
+export const deleteCoverImage = mutation({
+  args: {
+    documentId: v.id("documents"),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) return;
+
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_token", (q) =>
+        q.eq("tokenIdentifier", identity.tokenIdentifier),
+      )
+      .unique();
+    if (!user) return;
+
+    const document = await ctx.db.get(args.documentId);
+    if (!document || document.userId !== user._id) return;
+
+    if (document.coverImage && !document.coverImage.startsWith("http")) {
+      await ctx.storage.delete(document.coverImage as Id<"_storage">);
+    }
+
+    return await ctx.db.patch(args.documentId, { coverImage: undefined });
   },
 });
 
@@ -230,6 +289,13 @@ export const deleteForever = mutation({
       )
       .unique();
     if (!user) return;
+
+    const document = await ctx.db.get(args.documentId);
+    if (!document || document.userId !== user._id) return;
+
+    if (document.coverImage && !document.coverImage.startsWith("http")) {
+      await ctx.storage.delete(document.coverImage as Id<"_storage">);
+    }
 
     await ctx.db.delete(args.documentId);
   },

@@ -40,7 +40,7 @@ export default function DocumentPage({
         <div>
           {/* Deleted Banner */}
           {document.isDeleted && (
-            <div className="flex items-center justify-center gap-1 bg-red-600 p-2 px-4">
+            <div className="flex items-center justify-center gap-1 bg-red-500 p-2">
               This page is in the trash.
               <Button
                 variant={"ghost"}

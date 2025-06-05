@@ -59,7 +59,7 @@ export default function DocumentItem({
       icon: <Trash2 />,
       title: "Move to trash",
       onClick: async () => {
-        await deleteDocument({ documentId: document._id });
+        deleteDocument({ documentId: document._id });
 
         if (documentId === document._id) {
           router.push(`/${user?.username}`);
