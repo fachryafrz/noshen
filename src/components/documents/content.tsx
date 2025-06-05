@@ -33,8 +33,7 @@ export default function DocumentContent({
   const deleteStorage = useMutation(api.storage.deleteStorage);
 
   const [isEditing, setIsEditing] = useState(false);
-  const [value, setValue] = useState(document.title || "");
-  const [emoji, setEmoji] = useState(document.icon || "");
+  const [title, setTitle] = useState(document.title || "");
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const prevStorageIdsRef = useRef<Set<string>>(new Set());
@@ -67,20 +66,17 @@ export default function DocumentContent({
     },
   });
 
-  const handleTitleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const value = e.target.value;
-
+  const handleTitleChange = async (value: string) => {
     if (!value.trim()) return;
 
-    updateDocument({
+    await updateDocument({
       documentId: document._id,
       title: value,
+      icon: document.icon,
     });
   };
 
   const handleIconChange = async (emoji: string) => {
-    setEmoji(emoji);
-
     await updateDocument({
       documentId: document._id,
       title: document?.title || "",
@@ -127,6 +123,12 @@ export default function DocumentContent({
   };
 
   useEffect(() => {
+    if (!isEditing) {
+      setTitle(document.title || "");
+    }
+  }, [document.title, isEditing]);
+
+  useEffect(() => {
     if (isEditing && inputRef.current) {
       const el = inputRef.current;
       // Pindahkan cursor ke akhir teks
@@ -146,7 +148,7 @@ export default function DocumentContent({
     <div className="mx-auto max-w-4xl space-y-2 p-4">
       {/* Icon & Title */}
 
-      {emoji && (
+      {document.icon && (
         <Popover>
           <PopoverTrigger asChild>
             <Button
@@ -154,7 +156,7 @@ export default function DocumentContent({
               size={"icon"}
               className="mb-0 ml-[44px] !size-20 cursor-pointer !p-0 text-5xl"
             >
-              {emoji}
+              {document.icon}
             </Button>
           </PopoverTrigger>
           <PopoverContent className="!w-auto !border-0 !p-0">
@@ -169,7 +171,7 @@ export default function DocumentContent({
       <div className="group">
         {/* Icon */}
         <div className="px-[44px] opacity-0 transition-all group-hover:opacity-100">
-          {!emoji && (
+          {!document.icon && (
             <Popover>
               <PopoverTrigger asChild>
                 <Button variant={"ghost"} className="cursor-pointer">
@@ -194,13 +196,13 @@ export default function DocumentContent({
           <TextareaAutosize
             ref={inputRef}
             className="resize-none px-[54px] text-5xl font-bold outline-none"
-            value={value}
+            value={title}
             onBlur={() => setIsEditing(false)}
             autoFocus
             placeholder="Untitled"
             onChange={(e) => {
-              setValue(e.target.value);
-              handleTitleChange(e);
+              setTitle(e.target.value);
+              handleTitleChange(e.target.value);
             }}
           />
         ) : (

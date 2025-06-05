@@ -126,10 +126,12 @@ export const updateDocument = mutation({
       .unique();
     if (!user) return;
 
+    const document = await ctx.db.get(args.documentId);
+
     return await ctx.db.patch(args.documentId, {
       title: args.title,
       content: args.content,
-      icon: args.icon,
+      icon: args.icon || document?.icon,
     });
   },
 });

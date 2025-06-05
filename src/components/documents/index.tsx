@@ -8,6 +8,7 @@ import { api } from "../../../convex/_generated/api";
 import { Button } from "../ui/button";
 import { usePathname, useRouter } from "next/navigation";
 import { useClerk } from "@clerk/nextjs";
+import { useEffect } from "react";
 
 export default function DocumentPage({
   documentId,
@@ -26,6 +27,12 @@ export default function DocumentPage({
   });
   const restoreDocument = useMutation(api.documents.restoreDocument);
   const deleteForever = useMutation(api.documents.deleteForever);
+
+  useEffect(() => {
+    if (document === null) {
+      router.push(`/${user?.username}`);
+    }
+  }, [document, router, user?.username]);
 
   return (
     <>

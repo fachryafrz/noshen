@@ -85,10 +85,8 @@ export default function DocumentItem({
               <span
                 className={cn(
                   "-ml-1 block",
-                  cn(
-                    document.children.length > 0 &&
-                      "transition-all group-hover:opacity-0",
-                  ),
+                  document.children.length > 0 &&
+                    "transition-all group-hover:opacity-0",
                 )}
               >
                 {document.icon}
