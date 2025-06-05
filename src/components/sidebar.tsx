@@ -245,46 +245,46 @@ export default function Sidebar() {
 
               <ul>
                 {(deletedDocuments || []).map((document) => (
-                  <li key={document._id}>
+                  <li key={document._id} className="relative">
                     <Button
                       variant={`ghost`}
-                      className="hover:!bg-accent/30 relative w-full cursor-pointer justify-start"
+                      className="relative w-full cursor-pointer justify-start"
                       onClick={() => {
                         router.push(`/${user?.username}/${document._id}`);
                       }}
                     >
                       <File />
                       {document.title}
-
-                      <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-end p-2 transition-all [&_*]:pointer-events-auto">
-                        <Button
-                          size={"icon"}
-                          variant={"ghost"}
-                          className="hover:!bg-accent/100 size-6 cursor-pointer"
-                          onClick={async () => {
-                            await restoreDocument({
-                              documentId: document._id,
-                            });
-                          }}
-                        >
-                          <Undo />
-                        </Button>
-                        <Button
-                          size={"icon"}
-                          variant={"ghost"}
-                          className="hover:!bg-accent/100 size-6 cursor-pointer"
-                          onClick={async () => {
-                            await deleteForever({ documentId: document._id });
-
-                            if (documentId === document._id) {
-                              router.push(`/${user?.username}`);
-                            }
-                          }}
-                        >
-                          <Trash2 />
-                        </Button>
-                      </div>
                     </Button>
+
+                    <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-end p-2 transition-all [&_*]:pointer-events-auto">
+                      <Button
+                        size={"icon"}
+                        variant={"ghost"}
+                        className="size-6 cursor-pointer"
+                        onClick={async () => {
+                          await restoreDocument({
+                            documentId: document._id,
+                          });
+                        }}
+                      >
+                        <Undo />
+                      </Button>
+                      <Button
+                        size={"icon"}
+                        variant={"ghost"}
+                        className="size-6 cursor-pointer"
+                        onClick={async () => {
+                          await deleteForever({ documentId: document._id });
+
+                          if (documentId === document._id) {
+                            router.push(`/${user?.username}`);
+                          }
+                        }}
+                      >
+                        <Trash2 />
+                      </Button>
+                    </div>
                   </li>
                 ))}
               </ul>
