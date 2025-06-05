@@ -217,7 +217,7 @@ export default function Sidebar() {
               Trash
             </Button>
           </PopoverTrigger>
-          <PopoverContent side="right">
+          <PopoverContent side="right" className="p-1">
             <div className="space-y-4">
               <div className="flex items-center gap-1">
                 {/* Icon */}

@@ -86,9 +86,9 @@ export default function ToolbarCover({
           <ImageIcon /> {title}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="relative !w-auto !border-0 !p-0">
+      <PopoverContent className="relative !w-auto !border-0 p-1">
         <Tabs defaultValue="upload" className="w-[400px]">
-          <TabsList className="bg-transparent">
+          <TabsList className="bg-transparent p-0">
             <TabsTrigger value="upload">Upload</TabsTrigger>
             <TabsTrigger value="embed">Embed</TabsTrigger>
           </TabsList>
