@@ -61,7 +61,9 @@ export default function DocumentItem({
       onClick: async () => {
         await deleteDocument({ documentId: document._id });
 
-        router.push(`/${user?.username}`);
+        if (documentId === document._id) {
+          router.push(`/${user?.username}`);
+        }
       },
       variant: "destructive",
     },
