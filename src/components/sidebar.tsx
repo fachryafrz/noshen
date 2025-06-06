@@ -34,6 +34,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Input } from "./ui/input";
+import { cn } from "@/lib/utils";
 
 export default function Sidebar() {
   const router = useRouter();
@@ -248,7 +249,10 @@ export default function Sidebar() {
                   <li key={document._id} className="relative">
                     <Button
                       variant={`ghost`}
-                      className="relative w-full cursor-pointer justify-start"
+                      className={cn(
+                        "relative w-full cursor-pointer justify-start",
+                        documentId === document._id && "bg-accent/100",
+                      )}
                       onClick={() => {
                         router.push(`/${user?.username}/${document._id}`);
                       }}

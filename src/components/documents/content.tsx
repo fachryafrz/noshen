@@ -180,7 +180,7 @@ export default function DocumentContent({
               <Button
                 variant={"ghost"}
                 size={"icon"}
-                className="mb-0 ml-[44px] !size-20 cursor-pointer !p-0 text-5xl"
+                className="mb-0 ml-[44px] !size-20 cursor-pointer !p-0 text-6xl"
               >
                 {document.icon}
               </Button>

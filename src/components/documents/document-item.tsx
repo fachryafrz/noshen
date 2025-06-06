@@ -76,7 +76,10 @@ export default function DocumentItem({
         <ContextMenuTrigger className="group relative">
           <Button
             variant={`ghost`}
-            className="relative w-full cursor-pointer justify-start"
+            className={cn(
+              "relative w-full cursor-pointer justify-start",
+              documentId === document._id && "bg-accent/100",
+            )}
             onClick={() => {
               router.push(`/${user?.username}/${document._id}`);
             }}
