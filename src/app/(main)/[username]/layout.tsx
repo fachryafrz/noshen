@@ -1,8 +1,9 @@
 "use client";
 
+import { AppSidebar } from "@/components/app-sidebar";
 import DocumentHeader from "@/components/documents/header";
-import Sidebar from "@/components/sidebar";
 import { LoadingSpinner } from "@/components/spinner";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import { useConvexAuth } from "convex/react";
 
 export default function UsernameLayout({
@@ -21,17 +22,12 @@ export default function UsernameLayout({
   }
 
   return (
-    <div className="bg-secondary/20 flex">
-      {/* Sidebar */}
-      <Sidebar />
-
-      {/* Content */}
-      <main className="max-h-dvh min-h-dvh grow overflow-y-auto">
-        {/* Header */}
+    <SidebarProvider>
+      <AppSidebar />
+      <main className="bg-secondary/20 grow">
         <DocumentHeader />
-
         {children}
       </main>
-    </div>
+    </SidebarProvider>
   );
 }

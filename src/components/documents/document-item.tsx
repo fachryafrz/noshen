@@ -73,7 +73,7 @@ export default function DocumentItem({
     <li>
       {/* Document */}
       <ContextMenu>
-        <ContextMenuTrigger className="group relative">
+        <ContextMenuTrigger className="group/document relative">
           <Button
             variant={`ghost`}
             className={cn(
@@ -89,7 +89,7 @@ export default function DocumentItem({
                 className={cn(
                   "-ml-1 block",
                   document.children.length > 0 &&
-                    "transition-all group-hover:opacity-0",
+                    "transition-all group-hover/document:opacity-0",
                 )}
               >
                 {document.icon}
@@ -99,7 +99,7 @@ export default function DocumentItem({
                 className={cn(
                   "size-5",
                   document.children.length > 0 &&
-                    "transition-all group-hover:opacity-0",
+                    "transition-all group-hover/document:opacity-0",
                 )}
               />
             )}
@@ -109,7 +109,7 @@ export default function DocumentItem({
           </Button>
 
           {/* Actions */}
-          <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-between p-2 opacity-0 transition-all group-hover:opacity-100 [&_*]:pointer-events-auto">
+          <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-between p-2 transition-all group-hover/document:opacity-100 md:opacity-0 [&_*]:pointer-events-auto">
             {document.children.length > 0 ? (
               <Button
                 size={"icon"}

@@ -9,16 +9,14 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Input } from "../ui/input";
-import { ChevronsRight, File, Menu } from "lucide-react";
+import { File } from "lucide-react";
 import EmojiPicker, { Theme } from "emoji-picker-react";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { useTheme } from "next-themes";
 import { usePathname, useRouter } from "next/navigation";
-import { useSidebar } from "@/hooks/use-sidebar";
-import { cn } from "@/lib/utils";
-import { useIsMobile } from "@/hooks/use-mobile";
 import { useClerk } from "@clerk/nextjs";
+import { SidebarTrigger, useSidebar } from "../ui/sidebar";
 
 export default function DocumentHeader() {
   const router = useRouter();
@@ -33,10 +31,9 @@ export default function DocumentHeader() {
   });
 
   const { resolvedTheme } = useTheme();
-  const { isCollapsed, setisCollapsed } = useSidebar();
+  const { isMobile, open } = useSidebar();
 
   const [isEditing, setIsEditing] = useState(false);
-  const isMobile = useIsMobile();
   const [title, setTitle] = useState(document?.title || "");
 
   const updateDocument = useMutation(api.documents.updateDocument);
@@ -99,18 +96,7 @@ export default function DocumentHeader() {
 
       <header className="p-2">
         <div className="flex items-center">
-          <Button
-            variant={`ghost`}
-            className={cn(
-              "group relative cursor-pointer",
-              !isMobile ? !isCollapsed && "hidden" : "",
-            )}
-            size={"icon"}
-            onClick={() => setisCollapsed(!isCollapsed)}
-          >
-            <Menu className="text-primary/50 absolute top-1/2 left-1/2 size-6 -translate-x-1/2 -translate-y-1/2 transition-all group-hover:opacity-0" />
-            <ChevronsRight className="text-primary/50 absolute top-1/2 left-1/2 size-6 -translate-x-1/2 -translate-y-1/2 opacity-0 transition-all group-hover:opacity-100" />
-          </Button>
+          {(isMobile || !open) && <SidebarTrigger />}
 
           {document && (
             <Popover onOpenChange={setIsEditing}>
@@ -124,10 +110,9 @@ export default function DocumentHeader() {
                   <span>{document?.title}</span>
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="!p-1">
+              <PopoverContent className="!p-1" align="start">
                 <div className="flex items-center gap-1">
                   {/* Icon */}
-
                   <Popover>
                     <PopoverTrigger asChild>
                       <Button
