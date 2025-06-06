@@ -94,7 +94,7 @@ export default function DocumentHeader() {
         </div>
       )}
 
-      <header className="p-2">
+      <header className="min-h-[52px] p-2">
         <div className="flex items-center">
           {(isMobile || !open) && <SidebarTrigger />}
 

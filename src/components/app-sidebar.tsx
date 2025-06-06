@@ -23,6 +23,7 @@ import {
   Home,
   Search,
   Settings,
+  SunMoon,
   Trash2,
   Undo,
 } from "lucide-react";
@@ -38,6 +39,14 @@ import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Input } from "./ui/input";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { ThemeToggle } from "./theme-toggle";
 
 export function AppSidebar() {
   const router = useRouter();
@@ -48,6 +57,7 @@ export function AppSidebar() {
   const { user } = useClerk();
 
   const [searchTrashQuery, setSearchTrashQuery] = useState("");
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   const createDocument = useMutation(api.documents.createDocument);
   const documents = useQuery(api.documents.getDocuments);
@@ -84,9 +94,7 @@ export function AppSidebar() {
     {
       icon: <Settings className="size-5" />,
       title: "Settings",
-      onClick: () => {
-        toast.info("Not implemented yet");
-      },
+      onClick: () => setSettingsOpen(true),
     },
   ];
 
@@ -151,6 +159,34 @@ export function AppSidebar() {
               </li>
             ))}
           </ul>
+
+          <Dialog open={settingsOpen} onOpenChange={setSettingsOpen}>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle className="pb-4">Settings</DialogTitle>
+
+                <DialogDescription className="text-primary">
+                  <div className="flex items-center gap-4">
+                    {/* Icon */}
+                    <SunMoon />
+
+                    {/* Text */}
+                    <div>
+                      <h3 className="font-semibold">Appearance</h3>
+                      <p className="text-muted-foreground text-sm">
+                        Choose your preferred theme.
+                      </p>
+                    </div>
+
+                    {/* Button */}
+                    <div className="flex grow items-center justify-end">
+                      <ThemeToggle />
+                    </div>
+                  </div>
+                </DialogDescription>
+              </DialogHeader>
+            </DialogContent>
+          </Dialog>
         </SidebarGroup>
         <SidebarGroup>
           <ul>
