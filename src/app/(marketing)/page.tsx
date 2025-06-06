@@ -1,5 +1,6 @@
 "use client";
 
+import Logo from "@/components/logo";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { siteConfig } from "@/config/site";
@@ -23,9 +24,12 @@ export default function HomePage() {
     <div>
       {/* Nav */}
       <nav className="flex items-center justify-between p-4">
-        <Link href={`/`} className="text-xl font-bold">
-          {siteConfig.name}
-        </Link>
+        <Button asChild variant={"ghost"} className="gap-0.5">
+          <Link href={`/`} className="text-xl font-bold">
+            <Logo size={32} />
+            {siteConfig.name.slice(1)}
+          </Link>
+        </Button>
 
         <div className="flex items-center gap-1">
           <Button asChild variant={`ghost`}>

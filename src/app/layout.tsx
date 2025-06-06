@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ConvexClientProvider } from "@/components/convex-client-provider";
@@ -33,11 +33,23 @@ export const metadata: Metadata = {
     },
     description: siteConfig.description,
     url: siteConfig.url,
-    // images: {
-    //   url: "/maskable/maskable_icon_x192.png",
-    //   width: 192,
-    //   height: 192,
-    // },
+    images: {
+      url: "/maskable/maskable_icon_x512.png",
+      width: 192,
+      height: 192,
+    },
+  },
+  icons: {
+    icon: [
+      {
+        media: "(prefers-color-scheme: light)",
+        url: "/favicon/light/favicon.ico",
+      },
+      {
+        media: "(prefers-color-scheme: dark)",
+        url: "/favicon/dark/favicon.ico",
+      },
+    ],
   },
   robots: {
     index: false,
@@ -49,6 +61,13 @@ export const metadata: Metadata = {
       noimageindex: true,
     },
   },
+};
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "white" },
+    { media: "(prefers-color-scheme: dark)", color: "black" },
+  ],
 };
 
 export default function RootLayout({
