@@ -23,7 +23,7 @@ export default function HomePage() {
     <div>
       {/* Nav */}
       <nav className="flex items-center justify-between p-4">
-        <Link href={`/`} className="font-bold text-xl">
+        <Link href={`/`} className="text-xl font-bold">
           {siteConfig.name}
         </Link>
 
@@ -39,13 +39,13 @@ export default function HomePage() {
       </nav>
 
       {/* Hero */}
-      <div className="h-[calc(100dvh-68px)] flex justify-center items-center">
-        <div className="flex flex-col gap-4 items-center text-center max-w-3xl">
-          <h1 className="text-6xl font-bold text-pretty leading-tight">
+      <div className="flex h-[calc(100dvh-68px)] items-center justify-center p-4">
+        <div className="flex max-w-3xl flex-col items-center gap-4 text-center">
+          <h1 className="text-3xl leading-tight font-bold text-pretty md:text-5xl lg:text-6xl">
             Your Ideas, Documents, Plans. Unified. Welcome to{" "}
             <u>{siteConfig.name}</u>
           </h1>
-          <p className="text-pretty max-w-sm">
+          <p className="max-w-sm text-pretty">
             {siteConfig.name} is the connected workspace where better, faster
             work happens.
           </p>
