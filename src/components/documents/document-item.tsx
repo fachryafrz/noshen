@@ -103,7 +103,9 @@ export default function DocumentItem({
                 )}
               />
             )}
-            <span>{document.title}</span>
+            <span className="line-clamp-1 block max-w-[calc(100%-4rem)] text-ellipsis">
+              {document.title}
+            </span>
           </Button>
 
           {/* Actions */}

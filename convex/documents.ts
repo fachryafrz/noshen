@@ -27,7 +27,7 @@ export const getDocuments = query({
 
 export const getDocument = query({
   args: {
-    documentId: v.id("documents"),
+    documentId: v.optional(v.id("documents")),
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -41,8 +41,9 @@ export const getDocument = query({
       .unique();
     if (!user) return;
 
-    const document = await ctx.db.get(args.documentId);
+    if (!args.documentId) return null;
 
+    const document = await ctx.db.get(args.documentId);
     if (!document) return null;
 
     return {

@@ -35,6 +35,8 @@ import {
 } from "@/components/ui/popover";
 import { Input } from "./ui/input";
 import { cn } from "@/lib/utils";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { useSidebar } from "@/hooks/use-sidebar";
 
 export default function Sidebar() {
   const router = useRouter();
@@ -43,6 +45,8 @@ export default function Sidebar() {
   const [, , documentId] = pathname.split("/");
 
   const { user } = useClerk();
+  const isMobile = useIsMobile();
+  const { isCollapsed, setisCollapsed } = useSidebar();
 
   const [searchTrashQuery, setSearchTrashQuery] = useState("");
 
@@ -124,10 +128,19 @@ export default function Sidebar() {
     };
   }, []);
 
+  useEffect(() => {
+    if (isMobile) {
+      setisCollapsed(true);
+    }
+  }, [isMobile, setisCollapsed]);
+
   return (
     <aside
       ref={sidebarRef}
-      className="bg-secondary/50 group/sidebar relative z-50 flex h-dvh flex-col overflow-y-auto p-2 pb-0"
+      className={cn(
+        "bg-secondary md:bg-secondary/50 group/sidebar fixed z-50 flex h-dvh flex-col overflow-y-auto p-2 pb-0 transition-transform",
+        !isCollapsed ? "translate-x-0 md:relative" : "-translate-x-full",
+      )}
       style={{
         width: width,
       }}
@@ -162,9 +175,7 @@ export default function Sidebar() {
           variant={`ghost`}
           className="cursor-pointer opacity-0 transition-all group-hover/sidebar:opacity-100"
           size={"icon"}
-          onClick={() => {
-            toast.info("Not implemented yet");
-          }}
+          onClick={() => setisCollapsed(!isCollapsed)}
         >
           <ChevronsLeft className="text-primary/50 size-6" />
         </Button>
