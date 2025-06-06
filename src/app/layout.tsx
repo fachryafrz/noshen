@@ -7,6 +7,7 @@ import { Suspense } from "react";
 import { siteConfig } from "@/config/site";
 import { Toaster } from "@/components/ui/sonner";
 import StoreUser from "@/components/store-user";
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -93,6 +94,7 @@ export default function RootLayout({
           </ConvexClientProvider>
         </ThemeProvider>
       </body>
+      <GoogleAnalytics gaId={process.env.GA_MEASUREMENT_ID as string} />
     </html>
   );
 }
