@@ -34,7 +34,7 @@ export const metadata: Metadata = {
     description: siteConfig.description,
     url: siteConfig.url,
     images: {
-      url: "/maskable/maskable_icon_x512.png",
+      url: "/maskable/maskable_icon_x192.png",
       width: 192,
       height: 192,
     },
