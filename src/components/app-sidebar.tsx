@@ -47,6 +47,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { ThemeToggle } from "./theme-toggle";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export function AppSidebar() {
   const router = useRouter();
@@ -55,6 +56,7 @@ export function AppSidebar() {
   const [, , documentId] = pathname.split("/");
 
   const { user } = useClerk();
+  const isMobile = useIsMobile();
 
   const [searchTrashQuery, setSearchTrashQuery] = useState("");
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -219,7 +221,10 @@ export function AppSidebar() {
                 Trash
               </Button>
             </PopoverTrigger>
-            <PopoverContent side="right" className="p-1">
+            <PopoverContent
+              side={isMobile ? "bottom" : "right"}
+              className="p-1"
+            >
               <div className="space-y-4">
                 <div className="flex items-center gap-1">
                   {/* Icon */}

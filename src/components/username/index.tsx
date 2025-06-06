@@ -37,8 +37,8 @@ export default function UsernameHome() {
   }, [user, username, router]);
 
   return (
-    <div className="flex h-[calc(100%-52px)] w-full flex-col items-center justify-center gap-4">
-      <h1 className="text-3xl font-bold">{`Welcome to ${user?.firstName}'s ${siteConfig.name}`}</h1>
+    <div className="flex h-[calc(100%-52px)] w-full flex-col items-center justify-center gap-4 p-4">
+      <h1 className="text-center text-xl font-bold text-pretty sm:text-2xl md:text-3xl">{`Welcome to ${user?.firstName}'s ${siteConfig.name}`}</h1>
 
       <Button className="cursor-pointer" onClick={() => handleCreateDocument()}>
         <CirclePlus /> Create a note
