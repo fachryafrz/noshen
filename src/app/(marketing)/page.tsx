@@ -36,7 +36,7 @@ export default function HomePage() {
             <Link href={`/sign-in`}>Log in</Link>
           </Button>
           <Button asChild>
-            <Link href={`/sign-in`}>Get {siteConfig.name} free</Link>
+            <Link href={`/sign-up`}>Get {siteConfig.name} free</Link>
           </Button>
           <ThemeToggle />
         </div>
@@ -54,7 +54,7 @@ export default function HomePage() {
             work happens.
           </p>
           <Button asChild>
-            <Link href={`/sign-in`}>
+            <Link href={`/sign-up`}>
               Get {siteConfig.name} free
               <ArrowRight />
             </Link>

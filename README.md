@@ -1,36 +1,73 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+[![Noshen](https://fachryafrz.com/projects/noshen/home.png)](https://noshen.fachryafrz.com)
 
-## Getting Started
+# Noshen – Mini Notion Clone
 
-First, run the development server:
+A minimal Notion-like notes app that supports structured pages, nested navigation, and rich text editing.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
+## ✨ Key Features
+
+- 📁 **Nested Pages** – Create and organize pages in a collapsible tree structure
+- ✍️ **Rich Text Editor** – Supports headings, bullet & numbered lists, checkboxes, code blocks, and images
+- 🖼️ **Image Upload** – Drag & drop or paste images directly into the page
+- 💾 **Auto Save** – Changes are saved automatically in real-time
+
+## ✨ Features
+
+- 🔑 Authentication with Clerk
+
+  - 🔐 Sign In/Sign Up
+
+- 📄 Page Creation & Editing
+- 🌲 Nested Page Structure
+- 🧾 Rich Text Support
+
+  - 🔤 Headings (H1–H3)
+  - 📋 Bullet and numbered lists
+  - ☑️ Checkboxes
+  - 🧱 Code blocks
+  - 🖼️ Image embedding
+  - 📤 Image upload
+
+- 🔄 Real-time Sync with Convex
+
+## 🛠️ Tech Stack
+
+- **Next.js 15**
+- **React**
+- **Shadcn UI**
+- **Tailwind CSS**
+- **Clerk**
+- **Convex**
+- **Typescript**
+
+## 🚀 Fork the repository
+
+### 1. Fork
+
+Click the **Fork** button at the top-right corner of this page to create a copy of this repository in your account.
+
+### 2. Clone Your Forked Repository
+
+```sh
+git clone https://github.com/{your-username}/noshen.git
+
+cd noshen
+
+pnpm install
+
+cp .env.example .env.local
+
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🤝 Contributing
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Contributions are welcome! Please fork the repository, make your changes, and submit a pull request. We'll review and merge your contributions as we continue to improve Popcorn Vision.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 📜 License
 
-## Learn More
+This project is licensed under the [MIT License](LICENSE).
 
-To learn more about Next.js, take a look at the following resources:
+## 📸 Screenshots
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+[![Noshen](https://fachryafrz.com/projects/noshen/content.png)](https://noshen.fachryafrz.com)
