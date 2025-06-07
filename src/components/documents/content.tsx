@@ -197,7 +197,7 @@ export default function DocumentContent({
         {/* Icon & Title */}
         <div className="group">
           {/* Icon */}
-          <div className="px-[44px] opacity-0 transition-all group-hover:opacity-100">
+          <div className="px-[44px] transition-all group-hover:opacity-100 md:opacity-0">
             {!document.icon && (
               <ToolbarIcon onEmojiClick={(e) => handleIconChange(e.emoji)} />
             )}
@@ -215,7 +215,7 @@ export default function DocumentContent({
           {isEditing ? (
             <TextareaAutosize
               ref={inputRef}
-              className="resize-none px-[54px] text-5xl font-bold outline-none"
+              className="w-full resize-none px-[54px] text-5xl font-bold outline-none"
               value={title}
               onBlur={() => setIsEditing(false)}
               autoFocus
