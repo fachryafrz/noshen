@@ -4,7 +4,6 @@
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
   SidebarGroup,
   SidebarHeader,
   SidebarTrigger,
@@ -307,7 +306,6 @@ export function AppSidebar() {
           </Popover>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter />
     </Sidebar>
   );
 }
