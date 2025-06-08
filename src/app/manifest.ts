@@ -19,8 +19,8 @@ export default function manifest(): MetadataRoute.Manifest {
         type: "image/png",
       },
       {
-        src: "/favicon/dark/android-chrome-192x192.png",
-        sizes: "192x192",
+        src: "/favicon/dark/android-chrome-512x512.png",
+        sizes: "512x512",
         purpose: "any",
         type: "image/png",
       },
