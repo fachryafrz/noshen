@@ -120,7 +120,7 @@
   body {
     @apply bg-background text-foreground;
   }
-  @media (display-mode: browser) {
+  @media (display-mode: standalone) {
     * {
       -webkit-user-select: none;
       user-select: none;
