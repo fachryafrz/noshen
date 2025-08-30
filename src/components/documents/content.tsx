@@ -227,7 +227,7 @@ export default function DocumentContent({
             />
           ) : (
             <h1
-              className="px-[54px] pb-[13px] text-5xl font-bold"
+              className="px-[54px] pb-[13px] text-5xl font-bold select-text"
               onClick={() => setIsEditing(true)}
             >
               {document?.title}

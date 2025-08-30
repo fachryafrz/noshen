@@ -27,14 +27,5 @@ export default function DocumentPage({
     }
   }, [document, router, user?.username]);
 
-  return (
-    <>
-      {document && (
-        <div>
-          {/* Content */}
-          <DocumentContent document={document} />
-        </div>
-      )}
-    </>
-  );
+  return <>{document && <DocumentContent document={document} />}</>;
 }
