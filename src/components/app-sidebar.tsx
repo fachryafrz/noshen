@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import {
@@ -19,19 +18,16 @@ import {
   ChevronDown,
   CirclePlus,
   File,
-  Home,
   Search,
   Settings,
   SunMoon,
   Trash2,
   Undo,
 } from "lucide-react";
-import { SignOutButton, useClerk } from "@clerk/nextjs";
 import { toast } from "sonner";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import DocumentItem from "./documents/document-item";
 import { DocumentsTree } from "@/lib/types";
-import { Id } from "../../convex/_generated/dataModel";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
@@ -49,33 +45,33 @@ import { ThemeToggle } from "./theme-toggle";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 export function AppSidebar() {
-  const router = useRouter();
+  // const router = useRouter();
   const pathname = usePathname();
 
   const [, , documentId] = pathname.split("/");
 
-  const { user } = useClerk();
+  // const { user } = useClerk();
   const isMobile = useIsMobile();
 
   const [searchTrashQuery, setSearchTrashQuery] = useState("");
   const [settingsOpen, setSettingsOpen] = useState(false);
 
-  const createDocument = useMutation(api.documents.createDocument);
+  // const createDocument = useMutation(api.documents.createDocument);
   const documents = useQuery(api.documents.getDocuments);
   const deletedDocuments = useQuery(api.documents.getDeleted, {
     query: searchTrashQuery,
   });
   const restoreDocument = useMutation(api.documents.restoreDocument);
-  const deleteForever = useMutation(api.documents.deleteForever);
+  // const deleteForever = useMutation(api.documents.deleteForever);
 
-  const handleCreateDocument = async (parentDocumentId?: Id<"documents">) => {
-    const documentId = await createDocument({
-      title: "Untitled",
-      parentDocumentId: parentDocumentId,
-    });
+  // const handleCreateDocument = async (parentDocumentId?: Id<"documents">) => {
+  // const documentId = await createDocument({
+  //   title: "Untitled",
+  //   parentDocumentId: parentDocumentId,
+  // });
 
-    router.push(`/${user?.username}/${documentId}`);
-  };
+  // router.push(`/${user?.username}/${documentId}`);
+  // };
 
   const menu = [
     {
@@ -85,13 +81,13 @@ export function AppSidebar() {
         toast.info("Not implemented yet");
       },
     },
-    {
-      icon: <Home className="size-5" />,
-      title: "Home",
-      onClick: () => {
-        router.push(`/${user?.username}`);
-      },
-    },
+    // {
+    //   icon: <Home className="size-5" />,
+    //   title: "Home",
+    //   onClick: () => {
+    //     router.push(`/${user?.username}`);
+    //   },
+    // },
     {
       icon: <Settings className="size-5" />,
       title: "Settings",
@@ -124,8 +120,8 @@ export function AppSidebar() {
                 variant="ghost"
                 className="grow cursor-pointer justify-start"
               >
-                <img src={user?.imageUrl} alt="" className="h-5 w-5 rounded" />
-                {user?.username}
+                {/* <img src={user?.imageUrl} alt="" className="h-5 w-5 rounded" /> */}
+                {/* {user?.username} */}
                 <ChevronDown className="text-primary/50" />
               </Button>
             </DropdownMenuTrigger>
@@ -135,7 +131,7 @@ export function AppSidebar() {
                 variant="destructive"
                 className="w-full cursor-pointer"
               >
-                <SignOutButton>Log out</SignOutButton>
+                {/* <SignOutButton>Log out</SignOutButton> */}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -201,7 +197,7 @@ export function AppSidebar() {
               <Button
                 variant={`ghost`}
                 className="w-full cursor-pointer justify-start"
-                onClick={() => handleCreateDocument()}
+                // onClick={() => handleCreateDocument()}
               >
                 <CirclePlus className="size-5" />
                 New page
@@ -258,9 +254,9 @@ export function AppSidebar() {
                           "relative w-full cursor-pointer justify-start",
                           documentId === document._id && "bg-accent/100",
                         )}
-                        onClick={() => {
-                          router.push(`/${user?.username}/${document._id}`);
-                        }}
+                        // onClick={() => {
+                        //   router.push(`/${user?.username}/${document._id}`);
+                        // }}
                       >
                         {document.icon ? (
                           <span className="-ml-1 block">{document.icon}</span>
@@ -287,13 +283,13 @@ export function AppSidebar() {
                           size={"icon"}
                           variant={"ghost"}
                           className="size-6 cursor-pointer"
-                          onClick={async () => {
-                            await deleteForever({ documentId: document._id });
+                          // onClick={async () => {
+                          //   await deleteForever({ documentId: document._id });
 
-                            if (documentId === document._id) {
-                              router.push(`/${user?.username}`);
-                            }
-                          }}
+                          //   if (documentId === document._id) {
+                          //     router.push(`/${user?.username}`);
+                          //   }
+                          // }}
                         >
                           <Trash2 />
                         </Button>

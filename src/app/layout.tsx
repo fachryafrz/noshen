@@ -6,7 +6,6 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Suspense } from "react";
 import { siteConfig } from "@/config/site";
 import { Toaster } from "@/components/ui/sonner";
-import StoreUser from "@/components/store-user";
 import { GoogleAnalytics } from "@next/third-parties/google";
 
 const geistSans = Geist({
@@ -88,7 +87,6 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <ConvexClientProvider>
-            <StoreUser />
             <Suspense>{children}</Suspense>
             <Toaster position="bottom-center" />
           </ConvexClientProvider>
