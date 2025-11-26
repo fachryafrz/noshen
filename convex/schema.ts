@@ -5,10 +5,13 @@ export default defineSchema({
   users: defineTable({
     name: v.string(),
     email: v.string(),
-    username: v.string(),
-    avatarUrl: v.string(),
-    tokenIdentifier: v.string(),
-  }).index("by_token", ["tokenIdentifier"]),
+    username: v.optional(v.string()),
+    avatarUrl: v.optional(v.string()),
+    tokenIdentifier: v.optional(v.string()),
+  })
+    .index("by_token", ["tokenIdentifier"])
+    .index("email", ["email"])
+    .index("username", ["username"]),
 
   documents: defineTable({
     title: v.string(),

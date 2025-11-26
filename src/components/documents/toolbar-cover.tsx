@@ -100,8 +100,8 @@ export default function ToolbarCover({
               onClick={handleFileChange}
               disabled={isLoading}
             >
-              Set as cover
               {isLoading && <LoadingSpinner />}
+              Set as cover
             </Button>
           </TabsContent>
           <TabsContent value="embed" className="space-y-2 p-4">
@@ -115,8 +115,8 @@ export default function ToolbarCover({
               onClick={handleEmbed}
               disabled={isLoading}
             >
-              Set as cover
               {isLoading && <LoadingSpinner />}
+              Set as cover
             </Button>
           </TabsContent>
         </Tabs>

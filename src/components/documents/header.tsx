@@ -15,17 +15,16 @@ import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { useTheme } from "next-themes";
 import { usePathname, useRouter } from "next/navigation";
-import { useClerk } from "@clerk/nextjs";
 import { SidebarTrigger, useSidebar } from "../ui/sidebar";
 
 export default function DocumentHeader() {
   const router = useRouter();
   const pathname = usePathname();
 
-  const { user } = useClerk();
-
+  
   const [, , documentId] = pathname.split("/");
-
+  
+  const user = useQuery(api.users.getCurrentUser);
   const document = useQuery(api.documents.getDocument, {
     documentId: documentId as Id<"documents">,
   });
