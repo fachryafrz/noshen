@@ -2,9 +2,8 @@
 
 import { CirclePlus } from "lucide-react";
 import { Button } from "../ui/button";
-import { useClerk } from "@clerk/nextjs";
 import { siteConfig } from "@/config/site";
-import { useMutation } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { Id } from "../../../convex/_generated/dataModel";
 import { usePathname, useRouter } from "next/navigation";
@@ -13,10 +12,10 @@ import { useEffect } from "react";
 export default function UsernameHome() {
   const router = useRouter();
   const pathname = usePathname();
-  const { user } = useClerk();
 
   const [, username] = pathname.split("/");
 
+  const user = useQuery(api.users.getCurrentUser);
   const createDocument = useMutation(api.documents.createDocument);
 
   const handleCreateDocument = async (parentDocumentId?: Id<"documents">) => {
@@ -38,7 +37,9 @@ export default function UsernameHome() {
 
   return (
     <div className="flex h-[calc(100%-52px)] w-full flex-col items-center justify-center gap-4 p-4">
-      <h1 className="text-center text-xl font-bold text-pretty sm:text-2xl md:text-3xl">{`Welcome to ${user?.firstName}'s ${siteConfig.name}`}</h1>
+      {user && (
+        <h1 className="text-center text-xl font-bold text-pretty sm:text-2xl md:text-3xl">{`Welcome to ${user.name.split(" ")[0]}'s ${siteConfig.name}`}</h1>
+      )}
 
       <Button className="cursor-pointer" onClick={() => handleCreateDocument()}>
         <CirclePlus /> Create a note

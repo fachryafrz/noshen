@@ -9,10 +9,9 @@ import { username } from "better-auth/plugins";
 import { ConvexError, v } from "convex/values";
 
 import { components, internal } from "./_generated/api";
-import { DataModel } from "./_generated/dataModel";
+import { DataModel, Id } from "./_generated/dataModel";
 import authSchema from "./betterAuth/schema";
 import { mutation } from "./_generated/server";
-import { getUser } from "./utils";
 
 const siteUrl = process.env.SITE_URL!;
 const authFunctions: AuthFunctions = internal.auth;
@@ -66,9 +65,11 @@ export const authComponent = createClient<DataModel, typeof authSchema>(
             userId,
           });
         },
-        // onUpdate: async (ctx, newDoc, oldDoc) => {
-        //   //
-        // },
+        onUpdate: async (ctx, newDoc, oldDoc) => {
+          await ctx.db.patch(newDoc.userId as Id<"users">, {
+            username: newDoc.username as string,
+          });
+        },
         // onDelete: async (ctx, doc) => {
         //   //
         // },
@@ -118,26 +119,20 @@ export const setUsername = mutation({
     username: v.string(),
   },
   handler: async (ctx, args) => {
-    const user = await getUser(ctx);
-
-    if (!user) return;
-
     const username = args.username.toLowerCase();
 
-    const userExists = await ctx.db
-      .query("users")
-      .withIndex("username", (q) => q.eq("username", username))
-      .unique();
+    const { auth, headers } = await authComponent.getAuth(createAuth, ctx);
 
-    if (userExists) throw new ConvexError("Username already exists");
-
-    await ctx.db.patch(user._id, {
-      username,
+    const response = await auth.api.isUsernameAvailable({
+      headers,
+      body: { username },
     });
 
-    await ctx.runMutation(components.betterAuth.auth.setUsername, {
-      userId: user._id,
-      username,
+    if (!response.available) throw new ConvexError("Username already exists");
+
+    await auth.api.updateUser({
+      headers,
+      body: { username },
     });
   },
 });

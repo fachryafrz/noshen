@@ -4,8 +4,7 @@ import { DocumentsTree } from "@/lib/types";
 import { Button } from "../ui/button";
 import { ChevronRight, Ellipsis, File, Plus, Trash2 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
-import { useClerk } from "@clerk/nextjs";
-import { useMutation } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { Id } from "../../../convex/_generated/dataModel";
 import { useState } from "react";
@@ -33,10 +32,10 @@ export default function DocumentItem({
 
   const [, , documentId] = pathname.split("/");
 
-  const { user } = useClerk();
-
+  
   const [showChild, setShowChild] = useState(true);
-
+  
+  const user = useQuery(api.users.getCurrentUser);
   const createDocument = useMutation(api.documents.createDocument);
   const deleteDocument = useMutation(api.documents.deleteDocument);
 

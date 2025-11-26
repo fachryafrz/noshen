@@ -18,6 +18,7 @@ import {
   ChevronDown,
   CirclePlus,
   File,
+  Home,
   Search,
   Settings,
   SunMoon,
@@ -25,7 +26,7 @@ import {
   Undo,
 } from "lucide-react";
 import { toast } from "sonner";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import DocumentItem from "./documents/document-item";
 import { DocumentsTree } from "@/lib/types";
 import { useMutation, useQuery } from "convex/react";
@@ -43,14 +44,17 @@ import {
 } from "@/components/ui/dialog";
 import { ThemeToggle } from "./theme-toggle";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { Id } from "../../convex/_generated/dataModel";
+import { signOut } from "@/lib/auth-client";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 
 export function AppSidebar() {
-  // const router = useRouter();
+  const router = useRouter();
   const pathname = usePathname();
 
   const [, , documentId] = pathname.split("/");
 
-  // const { user } = useClerk();
+  const user = useQuery(api.users.getCurrentUser);
   const isMobile = useIsMobile();
 
   const [searchTrashQuery, setSearchTrashQuery] = useState("");
@@ -62,16 +66,17 @@ export function AppSidebar() {
     query: searchTrashQuery,
   });
   const restoreDocument = useMutation(api.documents.restoreDocument);
-  // const deleteForever = useMutation(api.documents.deleteForever);
+  const createDocument = useMutation(api.documents.createDocument);
+  const deleteForever = useMutation(api.documents.deleteForever);
 
-  // const handleCreateDocument = async (parentDocumentId?: Id<"documents">) => {
-  // const documentId = await createDocument({
-  //   title: "Untitled",
-  //   parentDocumentId: parentDocumentId,
-  // });
+  const handleCreateDocument = async (parentDocumentId?: Id<"documents">) => {
+    const documentId = await createDocument({
+      title: "Untitled",
+      parentDocumentId: parentDocumentId,
+    });
 
-  // router.push(`/${user?.username}/${documentId}`);
-  // };
+    router.push(`/${user?.username}/${documentId}`);
+  };
 
   const menu = [
     {
@@ -81,13 +86,13 @@ export function AppSidebar() {
         toast.info("Not implemented yet");
       },
     },
-    // {
-    //   icon: <Home className="size-5" />,
-    //   title: "Home",
-    //   onClick: () => {
-    //     router.push(`/${user?.username}`);
-    //   },
-    // },
+    {
+      icon: <Home className="size-5" />,
+      title: "Home",
+      onClick: () => {
+        router.push(`/${user?.username}`);
+      },
+    },
     {
       icon: <Settings className="size-5" />,
       title: "Settings",
@@ -120,18 +125,24 @@ export function AppSidebar() {
                 variant="ghost"
                 className="grow cursor-pointer justify-start"
               >
-                {/* <img src={user?.imageUrl} alt="" className="h-5 w-5 rounded" /> */}
-                {/* {user?.username} */}
+                <Avatar className="size-5 rounded">
+                  <AvatarImage src={user?.avatarUrl} />
+                  <AvatarFallback>{user?.username?.[0]}</AvatarFallback>
+                </Avatar>
+
+                {user?.username}
                 <ChevronDown className="text-primary/50" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start">
               <DropdownMenuItem
-                asChild
                 variant="destructive"
                 className="w-full cursor-pointer"
+                onClick={async () => {
+                  await signOut();
+                }}
               >
-                {/* <SignOutButton>Log out</SignOutButton> */}
+                Log out
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -197,7 +208,7 @@ export function AppSidebar() {
               <Button
                 variant={`ghost`}
                 className="w-full cursor-pointer justify-start"
-                // onClick={() => handleCreateDocument()}
+                onClick={() => handleCreateDocument()}
               >
                 <CirclePlus className="size-5" />
                 New page
@@ -283,13 +294,13 @@ export function AppSidebar() {
                           size={"icon"}
                           variant={"ghost"}
                           className="size-6 cursor-pointer"
-                          // onClick={async () => {
-                          //   await deleteForever({ documentId: document._id });
+                          onClick={async () => {
+                            await deleteForever({ documentId: document._id });
 
-                          //   if (documentId === document._id) {
-                          //     router.push(`/${user?.username}`);
-                          //   }
-                          // }}
+                            if (documentId === document._id) {
+                              router.push(`/${user?.username}`);
+                            }
+                          }}
                         >
                           <Trash2 />
                         </Button>

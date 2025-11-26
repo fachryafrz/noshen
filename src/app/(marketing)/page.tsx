@@ -6,19 +6,8 @@ import { Button } from "@/components/ui/button";
 import { siteConfig } from "@/config/site";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
-// import { useRouter } from "next/navigation";
-// import { useEffect } from "react";
 
 export default function HomePage() {
-  // const router = useRouter();
-  // const { user } = useClerk();
-
-  // useEffect(() => {
-  //   if (!user) return;
-
-  //   router.push(`/${user.username}`);
-  // }, [user]);
-
   return (
     <div>
       {/* Nav */}
