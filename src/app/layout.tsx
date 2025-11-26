@@ -1,13 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { ConvexClientProvider } from "@/components/convex-client-provider";
-import { ThemeProvider } from "@/components/theme-provider";
-import { Suspense } from "react";
 import { siteConfig } from "@/config/site";
-import { Toaster } from "@/components/ui/sonner";
 import { GoogleAnalytics } from "@next/third-parties/google";
-import ClientAuthorization from "@/components/client-authorization";
 import Providers from "@/components/_providers";
 
 const geistSans = Geist({
