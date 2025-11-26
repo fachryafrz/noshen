@@ -13,7 +13,7 @@ A minimal Notion-like notes app that supports structured pages, nested navigatio
 
 ## ✨ Features
 
-- 🔑 Authentication with Clerk
+- 🔑 Authentication with Better Auth
 
   - 🔐 Sign In/Sign Up
 
@@ -36,7 +36,7 @@ A minimal Notion-like notes app that supports structured pages, nested navigatio
 - **React**
 - **Shadcn UI**
 - **Tailwind CSS**
-- **Clerk**
+- **Better Auth**
 - **Convex**
 - **Typescript**
 

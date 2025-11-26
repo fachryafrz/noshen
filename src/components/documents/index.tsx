@@ -5,7 +5,6 @@ import { Id } from "../../../convex/_generated/dataModel";
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { useRouter } from "next/navigation";
-import { useClerk } from "@clerk/nextjs";
 import { useEffect } from "react";
 
 export default function DocumentPage({
@@ -15,8 +14,7 @@ export default function DocumentPage({
 }) {
   const router = useRouter();
 
-  const { user } = useClerk();
-
+  const user = useQuery(api.users.getCurrentUser);
   const document = useQuery(api.documents.getDocument, {
     documentId,
   });

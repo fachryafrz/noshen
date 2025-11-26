@@ -1,19 +1,12 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { Id } from "./_generated/dataModel";
+import { getUser } from "./utils";
 
 export const getDocuments = query({
   args: {},
   handler: async (ctx) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) return;
-
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_token", (q) =>
-        q.eq("tokenIdentifier", identity.tokenIdentifier),
-      )
-      .unique();
+    const user = await getUser(ctx);
     if (!user) return;
 
     const documents = await ctx.db
@@ -30,15 +23,7 @@ export const getDocument = query({
     documentId: v.optional(v.id("documents")),
   },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) return;
-
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_token", (q) =>
-        q.eq("tokenIdentifier", identity.tokenIdentifier),
-      )
-      .unique();
+    const user = await getUser(ctx);
     if (!user) return;
 
     if (!args.documentId) return null;
@@ -64,15 +49,7 @@ export const createDocument = mutation({
     parentDocumentId: v.optional(v.id("documents")),
   },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) return;
-
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_token", (q) =>
-        q.eq("tokenIdentifier", identity.tokenIdentifier),
-      )
-      .unique();
+    const user = await getUser(ctx);
     if (!user) return;
 
     return await ctx.db.insert("documents", {
@@ -90,15 +67,7 @@ export const getDeleted = query({
     query: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) return;
-
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_token", (q) =>
-        q.eq("tokenIdentifier", identity.tokenIdentifier),
-      )
-      .unique();
+    const user = await getUser(ctx);
     if (!user) return;
 
     if (args.query) {
@@ -130,15 +99,7 @@ export const updateDocument = mutation({
     coverImageEmbed: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) return;
-
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_token", (q) =>
-        q.eq("tokenIdentifier", identity.tokenIdentifier),
-      )
-      .unique();
+    const user = await getUser(ctx);
     if (!user) return;
 
     const document = await ctx.db.get(args.documentId);
@@ -174,15 +135,7 @@ export const deleteDocument = mutation({
     documentId: v.id("documents"),
   },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) return;
-
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_token", (q) =>
-        q.eq("tokenIdentifier", identity.tokenIdentifier),
-      )
-      .unique();
+    const user = await getUser(ctx);
     if (!user) return;
 
     const document = await ctx.db.get(args.documentId);
@@ -213,15 +166,7 @@ export const deleteCoverImage = mutation({
     documentId: v.id("documents"),
   },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) return;
-
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_token", (q) =>
-        q.eq("tokenIdentifier", identity.tokenIdentifier),
-      )
-      .unique();
+    const user = await getUser(ctx);
     if (!user) return;
 
     const document = await ctx.db.get(args.documentId);
@@ -240,15 +185,7 @@ export const restoreDocument = mutation({
     documentId: v.id("documents"),
   },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) return;
-
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_token", (q) =>
-        q.eq("tokenIdentifier", identity.tokenIdentifier),
-      )
-      .unique();
+    const user = await getUser(ctx);
     if (!user) return;
 
     const document = await ctx.db.get(args.documentId);
@@ -280,15 +217,7 @@ export const deleteForever = mutation({
     documentId: v.id("documents"),
   },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) return;
-
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_token", (q) =>
-        q.eq("tokenIdentifier", identity.tokenIdentifier),
-      )
-      .unique();
+    const user = await getUser(ctx);
     if (!user) return;
 
     const document = await ctx.db.get(args.documentId);

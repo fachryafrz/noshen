@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "convex": "pnpm dlx convex dev"
   },
   "dependencies": {
     "@blocknote/core": "0.32.0-hackdays.0",
@@ -14,6 +15,7 @@
     "@blocknote/react": "0.32.0-hackdays.0",
     "@clerk/nextjs": "^6.20.2",
     "@clerk/themes": "^2.2.48",
+    "@convex-dev/better-auth": "^0.9.7",
     "@hookform/resolvers": "^5.0.1",
     "@next/third-parties": "^15.3.3",
     "@radix-ui/react-accordion": "^1.2.11",
@@ -43,10 +45,11 @@
     "@radix-ui/react-toggle-group": "^1.1.10",
     "@radix-ui/react-tooltip": "^1.2.7",
     "@uidotdev/usehooks": "^2.4.1",
+    "better-auth": "1.3.27",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
-    "convex": "^1.24.8",
+    "convex": "^1.29.3",
     "date-fns": "^4.1.0",
     "debounce": "^2.2.0",
     "embla-carousel-react": "^8.6.0",

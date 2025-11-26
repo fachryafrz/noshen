@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import {
@@ -26,12 +25,10 @@ import {
   Trash2,
   Undo,
 } from "lucide-react";
-import { SignOutButton, useClerk } from "@clerk/nextjs";
 import { toast } from "sonner";
 import { usePathname, useRouter } from "next/navigation";
 import DocumentItem from "./documents/document-item";
 import { DocumentsTree } from "@/lib/types";
-import { Id } from "../../convex/_generated/dataModel";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
@@ -47,6 +44,9 @@ import {
 } from "@/components/ui/dialog";
 import { ThemeToggle } from "./theme-toggle";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { Id } from "../../convex/_generated/dataModel";
+import { signOut } from "@/lib/auth-client";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 
 export function AppSidebar() {
   const router = useRouter();
@@ -54,18 +54,19 @@ export function AppSidebar() {
 
   const [, , documentId] = pathname.split("/");
 
-  const { user } = useClerk();
+  const user = useQuery(api.users.getCurrentUser);
   const isMobile = useIsMobile();
 
   const [searchTrashQuery, setSearchTrashQuery] = useState("");
   const [settingsOpen, setSettingsOpen] = useState(false);
 
-  const createDocument = useMutation(api.documents.createDocument);
+  // const createDocument = useMutation(api.documents.createDocument);
   const documents = useQuery(api.documents.getDocuments);
   const deletedDocuments = useQuery(api.documents.getDeleted, {
     query: searchTrashQuery,
   });
   const restoreDocument = useMutation(api.documents.restoreDocument);
+  const createDocument = useMutation(api.documents.createDocument);
   const deleteForever = useMutation(api.documents.deleteForever);
 
   const handleCreateDocument = async (parentDocumentId?: Id<"documents">) => {
@@ -124,18 +125,26 @@ export function AppSidebar() {
                 variant="ghost"
                 className="grow cursor-pointer justify-start"
               >
-                <img src={user?.imageUrl} alt="" className="h-5 w-5 rounded" />
+                <Avatar className="size-5 rounded">
+                  <AvatarImage src={user?.avatarUrl} />
+                  <AvatarFallback className="rounded">
+                    {user?.username?.[0]}
+                  </AvatarFallback>
+                </Avatar>
+
                 {user?.username}
                 <ChevronDown className="text-primary/50" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start">
               <DropdownMenuItem
-                asChild
                 variant="destructive"
                 className="w-full cursor-pointer"
+                onClick={async () => {
+                  await signOut();
+                }}
               >
-                <SignOutButton>Log out</SignOutButton>
+                Log out
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -258,9 +267,9 @@ export function AppSidebar() {
                           "relative w-full cursor-pointer justify-start",
                           documentId === document._id && "bg-accent/100",
                         )}
-                        onClick={() => {
-                          router.push(`/${user?.username}/${document._id}`);
-                        }}
+                        // onClick={() => {
+                        //   router.push(`/${user?.username}/${document._id}`);
+                        // }}
                       >
                         {document.icon ? (
                           <span className="-ml-1 block">{document.icon}</span>

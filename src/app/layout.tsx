@@ -6,8 +6,9 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Suspense } from "react";
 import { siteConfig } from "@/config/site";
 import { Toaster } from "@/components/ui/sonner";
-import StoreUser from "@/components/store-user";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import ClientAuthorization from "@/components/client-authorization";
+import Providers from "@/components/_providers";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -81,18 +82,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <ConvexClientProvider>
-            <StoreUser />
-            <Suspense>{children}</Suspense>
-            <Toaster position="bottom-center" />
-          </ConvexClientProvider>
-        </ThemeProvider>
+        <Providers>{children}</Providers>
       </body>
       <GoogleAnalytics gaId={process.env.GA_MEASUREMENT_ID as string} />
     </html>
