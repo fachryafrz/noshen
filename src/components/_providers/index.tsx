@@ -18,9 +18,9 @@ export default function Providers({ children }: { children: React.ReactNode }) {
       disableTransitionOnChange
     >
       <ConvexClientProvider>
-        <ClientAuthorization>
-          <Suspense>{children}</Suspense>
-        </ClientAuthorization>
+        <Suspense>
+          <ClientAuthorization>{children}</ClientAuthorization>
+        </Suspense>
         <Toaster position={isMobile ? "top-center" : "bottom-right"} />
       </ConvexClientProvider>
     </ThemeProvider>
