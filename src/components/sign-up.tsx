@@ -46,7 +46,7 @@ export default function SignUp() {
 
   return (
     <Card className="max-w-md grow">
-      <CardHeader className="flex flex-col items-center gap-2">
+      <CardHeader className="flex flex-col items-center gap-6">
         <Logo />
         <CardTitle className="text-lg md:text-xl">Sign Up</CardTitle>
       </CardHeader>
