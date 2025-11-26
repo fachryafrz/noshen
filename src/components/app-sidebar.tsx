@@ -127,7 +127,9 @@ export function AppSidebar() {
               >
                 <Avatar className="size-5 rounded">
                   <AvatarImage src={user?.avatarUrl} />
-                  <AvatarFallback>{user?.username?.[0]}</AvatarFallback>
+                  <AvatarFallback className="rounded">
+                    {user?.username?.[0]}
+                  </AvatarFallback>
                 </Avatar>
 
                 {user?.username}
