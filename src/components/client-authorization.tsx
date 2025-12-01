@@ -41,12 +41,12 @@ export default function ClientAuthorization({
     const isPublicPath = PUBLIC_PATHS.includes(pathname);
 
     if (!isAuthenticated && !isPublicPath) {
-      router.push(`/sign-in?${searchParams.toString()}`);
+      router.replace(`/sign-in?${searchParams.toString()}`);
     } else if (isAuthenticated && isPublicPath) {
       if (!user?.username) {
-        router.push(`/?${searchParams.toString()}`);
+        router.replace(`/?${searchParams.toString()}`);
       } else {
-        router.push(`/${user.username}?${searchParams.toString()}`);
+        router.replace(`/${user.username}?${searchParams.toString()}`);
       }
     }
   }, [isLoading, isAuthenticated, pathname, router, searchParams, user]);
