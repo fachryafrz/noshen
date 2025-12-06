@@ -12,7 +12,6 @@ import { useEffect } from "react";
 import { LoadingSpinner } from "./spinner";
 import { api } from "../../convex/_generated/api";
 import SetUsername from "./set-username";
-import Logo from "./logo";
 
 const PUBLIC_PATHS = ["/sign-in", "/sign-up", "/"];
 
