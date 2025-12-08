@@ -267,9 +267,9 @@ export function AppSidebar() {
                           "relative w-full cursor-pointer justify-start",
                           documentId === document._id && "bg-accent/100",
                         )}
-                        // onClick={() => {
-                        //   router.push(`/${user?.username}/${document._id}`);
-                        // }}
+                        onClick={() => {
+                          router.push(`/${user?.username}/${document._id}`);
+                        }}
                       >
                         {document.icon ? (
                           <span className="-ml-1 block">{document.icon}</span>
