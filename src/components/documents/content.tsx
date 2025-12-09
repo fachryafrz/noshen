@@ -11,7 +11,6 @@ import { BlockNoteView } from "@blocknote/mantine";
 import "@blocknote/mantine/style.css";
 import { useCreateBlockNote } from "@blocknote/react";
 import { useTheme } from "next-themes";
-import { toast } from "sonner";
 import EmojiPicker, { Theme } from "emoji-picker-react";
 import { Button } from "../ui/button";
 import {
@@ -31,8 +30,6 @@ export default function DocumentContent({
   const { resolvedTheme } = useTheme();
 
   const updateDocument = useMutation(api.documents.updateDocument);
-  const generateUploadUrl = useMutation(api.storage.generateUploadUrl);
-  const getStorageUrl = useMutation(api.storage.getStorageUrl);
   const deleteStorage = useMutation(api.storage.deleteStorage);
 
   const [isEditing, setIsEditing] = useState(false);
@@ -43,32 +40,6 @@ export default function DocumentContent({
 
   const editor = useCreateBlockNote({
     initialContent: document.content && JSON.parse(document.content),
-    uploadFile: async (file) => {
-      if (!file) return "";
-
-      if (file.size > 1 * 1024 * 1024) {
-        toast.error("File size must be less than 1MB");
-        return "";
-      }
-
-      // Step 1: Get a short-lived upload URL
-      const postUrl = await generateUploadUrl();
-
-      // Step 2: POST the file to the URL
-      const result = await fetch(postUrl, {
-        method: "POST",
-        headers: { "Content-Type": file.type },
-        body: file,
-      });
-
-      const { storageId } = await result.json();
-
-      // Step 3: Generate URL public dari storageId
-      const url = await getStorageUrl({ storageId }); // fungsi dari Convex untuk dapatkan URL
-
-      // Step 4: Return object yang sesuai format BlockNote
-      return `${url}?sid=${storageId}`; // embed storageId di URL
-    },
   });
 
   const handleTitleChange = async (value: string) => {

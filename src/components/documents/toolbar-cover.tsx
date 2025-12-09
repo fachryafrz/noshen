@@ -23,43 +23,11 @@ export default function ToolbarCover({
   variant: VariantProps<typeof Button>["variant"];
 }) {
   const [popoverOpen, setPopoverOpen] = useState(false);
-  const [file, setFile] = useState<File>();
   const [embed, setEmbed] = useState<string>("");
   const [isLoading, setIsLoading] = useTransition();
 
   const updateDocument = useMutation(api.documents.updateDocument);
   const deleteCoverImage = useMutation(api.documents.deleteCoverImage);
-  const generateUploadUrl = useMutation(api.storage.generateUploadUrl);
-
-  const handleFileChange = async () => {
-    if (!file) return;
-
-    if (file.size > 1 * 1024 * 1024) {
-      toast.error("File size must be less than 1MB");
-      return;
-    }
-
-    setIsLoading(async () => {
-      // Step 1: Get a short-lived upload URL
-      const postUrl = await generateUploadUrl();
-
-      // Step 2: POST the file to the URL
-      const result = await fetch(postUrl, {
-        method: "POST",
-        headers: { "Content-Type": file.type },
-        body: file,
-      });
-
-      const { storageId } = await result.json();
-
-      await updateDocument({
-        documentId: document._id,
-        coverImageUpload: storageId,
-      });
-
-      setPopoverOpen(false);
-    });
-  };
 
   const handleEmbed = async () => {
     if (!embed) return;
@@ -87,24 +55,12 @@ export default function ToolbarCover({
         </Button>
       </PopoverTrigger>
       <PopoverContent className="relative !w-auto !border-0 p-1">
-        <Tabs defaultValue="upload" className="w-[400px]">
+        <Tabs defaultValue="embed" className="w-[400px]">
           <TabsList className="bg-transparent p-0">
-            <TabsTrigger value="upload">Upload</TabsTrigger>
             <TabsTrigger value="embed">Embed</TabsTrigger>
           </TabsList>
-          <TabsContent value="upload" className="space-y-2 p-4">
-            <Input type="file" onChange={(e) => setFile(e.target.files![0])} />
-            <Button
-              variant={"outline"}
-              className="w-full cursor-pointer"
-              onClick={handleFileChange}
-              disabled={isLoading}
-            >
-              {isLoading && <LoadingSpinner />}
-              Set as cover
-            </Button>
-          </TabsContent>
-          <TabsContent value="embed" className="space-y-2 p-4">
+
+          <TabsContent value="embed" className="space-y-2">
             <Input
               placeholder="https://example.com/image.jpg"
               onChange={(e) => setEmbed(e.target.value)}

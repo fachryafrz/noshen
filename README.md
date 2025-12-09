@@ -8,7 +8,7 @@ A minimal Notion-like notes app that supports structured pages, nested navigatio
 
 - 📁 **Nested Pages** – Create and organize pages in a collapsible tree structure
 - ✍️ **Rich Text Editor** – Supports headings, bullet & numbered lists, checkboxes, code blocks, and images
-- 🖼️ **Image Upload** – Drag & drop or paste images directly into the page
+- 🖼️ **Show Image** – Paste image url directly into the page
 - 💾 **Auto Save** – Changes are saved automatically in real-time
 
 ## ✨ Features
@@ -26,7 +26,6 @@ A minimal Notion-like notes app that supports structured pages, nested navigatio
   - ☑️ Checkboxes
   - 🧱 Code blocks
   - 🖼️ Image embedding
-  - 📤 Image upload
 
 - 🔄 Real-time Sync with Convex
 
